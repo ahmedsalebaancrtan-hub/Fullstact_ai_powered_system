@@ -32,7 +32,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="h-screen w-screen bg-[#0a0f1e] flex flex-col items-center justify-center font-sans overflow-hidden relative">
+    <div className="min-h-screen w-screen bg-[#0a0f1e] flex flex-col items-center justify-center font-sans overflow-y-auto relative [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] py-24 px-4">
       <PublicNavbar />
 
       {/* Background Ambience */}
@@ -60,7 +60,7 @@ export default function LoginPage() {
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-[500px] px-6 relative z-10"
       >
-        <div className="bg-[#0f172a]/40 backdrop-blur-3xl rounded-[40px] border border-white/5 p-8 md:p-12 shadow-2xl">
+        <div className="bg-[#0f172a]/40 backdrop-blur-3xl rounded-[40px] border border-white/5 p-10 shadow-2xl w-full">
           
           <div className="text-center mb-10">
             <h1 className="text-3xl font-black text-white mb-3 tracking-tight">Quiz Login</h1>
@@ -69,7 +69,7 @@ export default function LoginPage() {
             </p>
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-6">
+          <form onSubmit={handleLogin} className="space-y-8 w-full">
             <div className="space-y-3">
               <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest px-1">Enter Email</label>
               <div className="relative group">

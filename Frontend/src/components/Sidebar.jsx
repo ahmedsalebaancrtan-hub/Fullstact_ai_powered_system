@@ -36,7 +36,7 @@ const Sidebar = ({ isOpen, toggleSidebar, logout, user }) => {
 
       {/* Sidebar Sidebar */}
       <aside 
-        className={`fixed left-0 top-0 h-full bg-[#1e3a8a] text-white transition-all duration-300 z-[70] 
+        className={`fixed left-0 top-0 h-full bg-[#0a0f1e] text-white transition-all duration-300 z-[70] 
         ${isOpen ? 'w-[280px] translate-x-0' : 'w-0 -translate-x-full md:w-20 md:translate-x-0'}
         overflow-hidden shadow-2xl border-r border-white/5`}
       >
@@ -44,7 +44,7 @@ const Sidebar = ({ isOpen, toggleSidebar, logout, user }) => {
           {/* Logo Section */}
           <div className="p-8 flex items-center justify-between shrink-0">
             <h2 className={`font-black text-xl tracking-tighter transition-all duration-300 ${!isOpen && 'md:opacity-0 md:scale-0'}`}>
-              ACADEMIC <span className="text-[#F8C2A0]">AI</span>
+              QUIZ <span className="text-[#F8C2A0]">GENERATOR</span>
             </h2>
             <button 
               onClick={toggleSidebar}
@@ -67,7 +67,7 @@ const Sidebar = ({ isOpen, toggleSidebar, logout, user }) => {
                   }}
                   className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl transition-all relative group
                     ${isActive 
-                      ? 'bg-white/10 text-[#F8C2A0] shadow-xl shadow-black/10' 
+                      ? 'bg-indigo-600/20 text-indigo-400 shadow-xl shadow-black/10' 
                       : 'text-gray-400 hover:bg-white/5 hover:text-white'
                     }`}
                 >
@@ -81,7 +81,7 @@ const Sidebar = ({ isOpen, toggleSidebar, logout, user }) => {
           </nav>
 
           {/* User Section (Bottom) */}
-          <div className="p-6 border-t border-white/5 shrink-0 bg-[#1e3a8a]/50">
+          <div className="p-6 border-t border-white/5 shrink-0 bg-white/5">
             <button 
               onClick={logout}
               className="w-full flex items-center gap-4 px-5 py-4 text-gray-400 hover:text-red-400 hover:bg-red-400/10 rounded-2xl transition-all group"

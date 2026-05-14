@@ -38,7 +38,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="h-screen w-screen bg-[#0a0f1e] flex flex-col items-center justify-center font-sans overflow-hidden relative">
+    <div className="min-h-screen w-screen bg-[#0a0f1e] flex flex-col items-center justify-center font-sans overflow-y-auto relative [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] py-24 px-4">
       <PublicNavbar />
 
       {/* Background Ambience */}
@@ -66,7 +66,7 @@ export default function RegisterPage() {
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-[500px] px-6 relative z-10"
       >
-        <div className="bg-[#0f172a]/40 backdrop-blur-3xl rounded-[40px] border border-white/5 p-8 md:p-12 shadow-2xl">
+        <div className="bg-[#0f172a]/40 backdrop-blur-3xl rounded-[40px] border border-white/5 p-10 shadow-2xl w-full">
           
           <div className="text-center mb-8">
             <h1 className="text-3xl font-black text-white mb-2 tracking-tight">Create User</h1>
@@ -75,7 +75,7 @@ export default function RegisterPage() {
             </p>
           </div>
 
-          <form onSubmit={handleRegister} className="space-y-4">
+          <form onSubmit={handleRegister} className="space-y-8 w-full">
             <div className="space-y-2">
               <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest px-1">Full Name</label>
               <div className="relative group">

@@ -18,8 +18,8 @@ const PublicNavbar = () => {
           <span className="text-white font-black text-2xl">A</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="font-black text-xl text-white tracking-tight uppercase">Academic</span>
-          <span className="font-black text-xl text-[#F8C2A0] tracking-tight uppercase">AI</span>
+          <span className="font-black text-xl text-white tracking-tight uppercase">QUIZ</span>
+          <span className="font-black text-xl text-[#F8C2A0] tracking-tight uppercase">GENERATOR</span>
         </div>
       </div>
 

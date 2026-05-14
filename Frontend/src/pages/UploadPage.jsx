@@ -18,7 +18,7 @@ import useAuthStore from '../store/useAuthStore';
 export default function UploadPage() {
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
-  const { isLoading, setIsLoading, setCurrentQuiz, addRecentQuiz, setError } = useQuizStore();
+  const { isLoading, setLoading, setCurrentQuiz, addRecentQuiz, setError } = useQuizStore();
 
   const [title, setTitle] = useState('');
   const [notes, setNotes] = useState('');
@@ -42,7 +42,7 @@ export default function UploadPage() {
       return;
     }
 
-    setIsLoading(true);
+    setLoading(true);
     const loadingToast = toast.loading("AI is designing your assessment...");
 
     try {
@@ -81,11 +81,7 @@ export default function UploadPage() {
         
         toast.success("Quiz generated successfully!", { id: loadingToast });
         
-        if (user?.role === 'TEACHER' || user?.Role === 'TEACHER') {
-          navigate(`/exam-editor/${quizData.id}`);
-        } else {
-          navigate(`/quiz-view/${quizData.id}`);
-        }
+        navigate(`/quiz-view/${quizData.id}`);
       } else {
         throw new Error(quizResp.data.message || "Failed to generate quiz.");
       }
@@ -94,7 +90,7 @@ export default function UploadPage() {
       toast.error(backendError, { id: loadingToast });
       setError(backendError);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
@@ -102,143 +98,140 @@ export default function UploadPage() {
     <motion.div 
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="max-w-7xl mx-auto w-full"
+      className="max-w-4xl mx-auto w-full flex flex-col h-[calc(100vh-160px)]"
     >
-      <div className="mb-10">
-        <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Create AI Assessment</h1>
-        <p className="text-gray-500 mt-2 text-lg">Input your lecture notes or study material to generate pedagogical questions.</p>
+      <div className="text-center mb-8 shrink-0">
+        <h1 className="text-4xl font-black text-gray-900 tracking-tight">Create AI Assessment</h1>
+        <p className="text-gray-500 mt-3 text-lg font-medium">Input your lecture notes or study material to generate pedagogical questions.</p>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-8">
-        
-        {/* Left Side: Document Info */}
-        <div className="flex-1 space-y-6 w-full">
-          <div className="bg-white rounded-[32px] shadow-sm border border-gray-100 p-8 md:p-10">
-            <div className="flex items-center gap-4 mb-8">
-              <div className="h-12 w-12 rounded-2xl bg-blue-50 text-[#1e3a8a] flex items-center justify-center">
-                <FileText size={24} />
-              </div>
-              <h2 className="text-2xl font-bold text-gray-800">Study Material</h2>
-            </div>
-
-            <div className="space-y-8">
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-3 uppercase tracking-wider">Quiz Title</label>
-                <input 
-                  type="text"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="e.g. Introduction to Quantum Physics"
-                  className="w-full px-6 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#1e3a8a]/5 focus:border-[#1e3a8a] transition-all text-lg"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-3 uppercase tracking-wider">Course Content / Notes</label>
-                <textarea 
-                  rows="12"
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  placeholder="Paste your textbook chapters, lecture transcripts, or summaries here..."
-                  className="w-full px-6 py-5 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#1e3a8a]/5 focus:border-[#1e3a8a] transition-all resize-none text-lg leading-relaxed"
-                ></textarea>
-              </div>
-            </div>
-          </div>
+      <div className="bg-[#0a0f1e] rounded-[40px] shadow-2xl border border-gray-800 overflow-hidden flex-1 flex flex-col relative">
+        {/* Background Ambience similar to Login */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute top-0 right-0 w-[60%] h-[60%] bg-indigo-900/10 rounded-full blur-[120px]"></div>
+          <div className="absolute bottom-0 left-[-10%] w-[50%] h-[50%] bg-blue-900/10 rounded-full blur-[100px]"></div>
         </div>
 
-        {/* Right Side: AI Settings */}
-        <div className="w-full lg:w-[420px] space-y-6 shrink-0">
-          <div className="bg-white rounded-[32px] shadow-sm border border-gray-100 p-8 md:p-10 sticky top-28">
-            <div className="flex items-center gap-4 mb-10">
-              <div className="h-12 w-12 rounded-2xl bg-orange-50 text-[#F8C2A0] flex items-center justify-center">
-                <Settings size={24} />
-              </div>
-              <h2 className="text-2xl font-bold text-gray-800">AI Configuration</h2>
+        {/* Scrollable Inner Container */}
+        <div className="flex-1 overflow-y-auto p-6 md:p-12 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] relative z-10">
+          <div className="space-y-10">
+            
+            {/* Topic / Title */}
+            <div className="space-y-4 w-full">
+              <label className="block text-sm font-black text-white uppercase tracking-widest px-1">Assessment Topic</label>
+              <input 
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="e.g. Introduction to Quantum Physics"
+                className="w-full px-8 py-6 bg-slate-900/50 border border-white/5 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500/50 transition-all text-xl text-white placeholder:text-gray-600 font-medium"
+              />
+            </div>
+            
+            {/* Course Content / Notes */}
+            <div className="space-y-4 w-full">
+              <label className="block text-sm font-black text-white uppercase tracking-widest px-1">Course Content</label>
+              <textarea 
+                rows="8"
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder="Paste your textbook chapters, lecture transcripts, or summaries here..."
+                className="w-full px-8 py-6 bg-slate-900/50 border border-white/5 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500/50 transition-all text-xl text-white placeholder:text-gray-600 resize-y leading-relaxed font-medium"
+              ></textarea>
             </div>
 
-            <div className="space-y-10">
-              {/* Difficulty */}
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-5 uppercase tracking-wider">Difficulty Level</label>
-                <div className="grid grid-cols-3 gap-3 p-2 bg-gray-50 rounded-2xl border border-gray-200">
-                  {['Easy', 'Medium', 'Hard'].map((level) => (
-                    <button
-                      key={level}
-                      onClick={() => setDifficulty(level)}
-                      className={`py-3 text-sm font-bold rounded-xl transition-all ${
-                        difficulty === level 
-                          ? 'bg-white text-[#1e3a8a] shadow-md shadow-blue-100 scale-105' 
-                          : 'text-gray-400 hover:text-gray-600'
-                      }`}
-                    >
-                      {level}
-                    </button>
-                  ))}
-                </div>
+            {/* Difficulty Level Row */}
+            <div className="space-y-4 w-full">
+              <label className="block text-sm font-black text-white uppercase tracking-widest px-1">Difficulty Level</label>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {['Easy', 'Medium', 'Hard'].map((level) => (
+                  <button
+                    key={level}
+                    onClick={() => setDifficulty(level)}
+                    className={`py-6 px-6 text-lg font-bold rounded-2xl transition-all border flex items-center justify-between ${
+                      difficulty === level 
+                        ? 'bg-indigo-600/20 border-indigo-500/50 text-white shadow-lg shadow-indigo-900/20' 
+                        : 'bg-slate-900/50 border-white/5 text-gray-500 hover:text-white hover:bg-slate-800/50'
+                    }`}
+                  >
+                    {level}
+                    {difficulty === level && <CheckCircle2 size={24} className="text-indigo-400" />}
+                  </button>
+                ))}
               </div>
+            </div>
 
-              {/* Question Types */}
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-5 uppercase tracking-wider">Assessment Style</label>
-                <div className="space-y-3">
-                  {['Multiple Choice', 'True/False', 'Short Answer'].map((type) => (
-                    <label key={type} className="flex items-center justify-between p-5 bg-gray-50 rounded-2xl border border-gray-200 cursor-pointer hover:bg-gray-100/50 transition-all group">
-                      <div className="flex items-center gap-4">
-                        <input 
-                          type="checkbox" 
-                          className="hidden" 
-                          checked={questionTypes.includes(type)}
-                          onChange={() => toggleQuestionType(type)}
-                        />
-                        <div className={`h-6 w-6 rounded-lg border-2 flex items-center justify-center transition-all ${
-                          questionTypes.includes(type) ? 'bg-[#1e3a8a] border-[#1e3a8a]' : 'border-gray-300 bg-white'
-                        }`}>
-                          {questionTypes.includes(type) && <CheckCircle2 size={16} className="text-white" />}
-                        </div>
-                        <span className="text-md font-bold text-gray-700">{type}</span>
-                      </div>
-                    </label>
-                  ))}
-                </div>
+            {/* Assessment Style Row */}
+            <div className="space-y-4 w-full">
+              <label className="block text-sm font-black text-white uppercase tracking-widest px-1">Assessment Style</label>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {['Multiple Choice', 'True/False', 'Short Answer'].map((type) => (
+                  <label key={type} className={`py-6 px-6 text-lg font-bold rounded-2xl transition-all border flex items-center justify-between cursor-pointer ${
+                    questionTypes.includes(type)
+                      ? 'bg-indigo-600/20 border-indigo-500/50 text-white shadow-lg shadow-indigo-900/20'
+                      : 'bg-slate-900/50 border-white/5 text-gray-500 hover:text-white hover:bg-slate-800/50'
+                  }`}>
+                    <div className="flex items-center gap-4">
+                      <input 
+                        type="checkbox" 
+                        className="hidden" 
+                        checked={questionTypes.includes(type)}
+                        onChange={() => toggleQuestionType(type)}
+                      />
+                      <span>{type}</span>
+                    </div>
+                    <div className={`h-6 w-6 rounded-lg border-2 flex items-center justify-center transition-all ${
+                      questionTypes.includes(type) ? 'bg-indigo-500 border-indigo-500' : 'border-gray-600 bg-transparent'
+                    }`}>
+                      {questionTypes.includes(type) && <CheckCircle2 size={16} className="text-white" />}
+                    </div>
+                  </label>
+                ))}
               </div>
+            </div>
 
-              {/* Number of Questions */}
-              <div>
-                <div className="flex items-center justify-between mb-5">
-                  <label className="text-sm font-bold text-gray-700 uppercase tracking-wider">No. of Questions</label>
-                  <span className="text-lg font-black text-[#1e3a8a] bg-blue-50 px-4 py-1.5 rounded-xl">{numQuestions}</span>
-                </div>
+            {/* Number of Questions */}
+            <div className="space-y-4 w-full">
+              <div className="flex items-center justify-between px-1">
+                <label className="text-sm font-black text-white uppercase tracking-widest">Number of Questions</label>
+                <span className="text-xl font-black text-[#F8C2A0] bg-orange-900/30 px-6 py-2 rounded-xl">{numQuestions}</span>
+              </div>
+              <div className="py-8 bg-slate-900/50 border border-white/5 rounded-2xl px-8">
                 <input 
                   type="range"
                   min="1"
                   max="20"
                   value={numQuestions}
                   onChange={(e) => setNumQuestions(parseInt(e.target.value))}
-                  className="w-full h-2.5 bg-gray-200 rounded-full appearance-none cursor-pointer accent-[#1e3a8a]"
+                  className="w-full h-3 bg-slate-800 rounded-full appearance-none cursor-pointer accent-[#F8C2A0]"
                 />
-                <div className="flex justify-between mt-3 text-[12px] font-black text-gray-400">
-                  <span>1</span>
-                  <span>20</span>
+                <div className="flex justify-between mt-6 text-[13px] font-black text-gray-500 uppercase tracking-widest">
+                  <span>1 Question</span>
+                  <span>20 Questions</span>
                 </div>
               </div>
+            </div>
 
+            {/* Submit Button */}
+            <div className="pt-8 w-full">
               <button 
                 onClick={handleGenerate}
                 disabled={isLoading}
-                className="w-full py-5 bg-[#F8C2A0] text-gray-900 font-black text-lg rounded-2xl flex items-center justify-center gap-4 hover:bg-[#f7b58c] transition-all shadow-xl shadow-[#F8C2A0]/30 transform hover:-translate-y-1 active:translate-y-0 mt-8 group disabled:opacity-50 disabled:cursor-not-allowed"
+                className={`relative z-50 w-full py-6 font-black text-xl rounded-2xl flex items-center justify-center gap-4 transition-all shadow-2xl transform active:scale-95 group cursor-pointer ${
+                  isLoading 
+                    ? "bg-slate-800 text-gray-500 cursor-not-allowed opacity-80 shadow-none" 
+                    : "bg-[#F8C2A0] text-[#1e3a8a] hover:bg-[#f7b58c] hover:scale-[1.02] shadow-[#F8C2A0]/20"
+                }`}
               >
-                <Zap size={24} className="group-hover:fill-current" />
-                <span>Generate Assessment</span>
+                {isLoading ? (
+                  <Loader2 size={32} className="animate-spin text-[#F8C2A0]" />
+                ) : (
+                  <Zap size={32} className="group-hover:fill-current" />
+                )}
+                <span>{isLoading ? "Generating Quiz..." : "Start Quiz Now"}</span>
               </button>
             </div>
 
-            <div className="mt-10 p-6 bg-blue-50/50 rounded-2xl border border-blue-100 flex gap-4">
-              <Info size={24} className="text-[#1e3a8a] shrink-0" />
-              <p className="text-[13px] text-blue-900 leading-relaxed font-bold">
-                Gemini 3 will analyze your material to create high-standard pedagogical assessments.
-              </p>
-            </div>
           </div>
         </div>
       </div>

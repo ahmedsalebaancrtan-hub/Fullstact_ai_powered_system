@@ -10,7 +10,6 @@ const DashboardPage = lazy(() => import('./pages/DashboardPage'));
 const UploadPage = lazy(() => import('./pages/UploadPage'));
 const HistoryPage = lazy(() => import('./pages/HistoryPage'));
 const QuizViewPage = lazy(() => import('./pages/QuizViewPage'));
-const ExamEditorPage = lazy(() => import('./pages/ExamEditorPage'));
 const DashboardLayout = lazy(() => import('./layouts/DashboardLayout'));
 
 // Protected Route Wrapper
@@ -47,7 +46,7 @@ function App() {
             <Route path="/upload" element={<UploadPage />} />
             <Route path="/history" element={<HistoryPage />} />
             <Route path="/quiz-view/:id" element={<QuizViewPage />} />
-            <Route path="/exam-editor/:id" element={<ExamEditorPage />} />
+
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
           </Route>
 
