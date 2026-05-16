@@ -23,9 +23,9 @@ export default function DashboardPage() {
   const { totalQuizzes, totalMaterials, recentActivity } = getStats({ recentQuizzes });
 
   const stats = [
-    { label: 'Total Assessments', value: totalQuizzes, icon: FileText, color: 'bg-indigo-600', shadow: 'shadow-indigo-900/20' },
-    { label: 'Materials Processed', value: totalMaterials, icon: UploadCloud, color: 'bg-blue-600', shadow: 'shadow-blue-900/20' },
-    { label: 'Published Quizzes', value: recentActivity.filter(q => q.status === 'PUBLISHED').length || totalQuizzes, icon: BookOpen, color: 'bg-[#F8C2A0]', shadow: 'shadow-orange-900/20', textColor: 'text-[#1e3a8a]' },
+    { label: 'Total Assessments', value: totalQuizzes, icon: FileText, color: 'text-indigo-400', glow: 'shadow-[0_0_15px_rgba(99,102,241,0.5)] border-indigo-500/50', bg: 'bg-indigo-500/10' },
+    { label: 'Materials Processed', value: totalMaterials, icon: UploadCloud, color: 'text-purple-400', glow: 'shadow-[0_0_15px_rgba(168,85,247,0.5)] border-purple-500/50', bg: 'bg-purple-500/10' },
+    { label: 'Published Quizzes', value: recentActivity.filter(q => q.status === 'PUBLISHED').length || totalQuizzes, icon: BookOpen, color: 'text-pink-400', glow: 'shadow-[0_0_15px_rgba(236,72,153,0.5)] border-pink-500/50', bg: 'bg-pink-500/10' },
   ];
 
   return (
@@ -36,16 +36,18 @@ export default function DashboardPage() {
     >
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-black text-white tracking-tight">Quiz Overview</h1>
-          <p className="text-gray-400 font-medium mt-1">Welcome back. Here's what's happening with your assessments.</p>
+          <h1 className="text-3xl font-black text-slate-50 tracking-tight">Quiz Overview</h1>
+          <p className="text-slate-300 font-medium mt-1">Welcome back. Here's what's happening with your assessments.</p>
         </div>
-        <button 
+        <motion.button 
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
           onClick={() => navigate('/upload')}
-          className="flex items-center gap-3 px-8 py-4 bg-[#F8C2A0] text-[#1e3a8a] rounded-2xl font-black shadow-xl shadow-[#F8C2A0]/20 hover:bg-[#f7b58c] transition-all active:scale-95 whitespace-nowrap"
+          className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-indigo-500 to-purple-600 text-slate-50 rounded-full font-black shadow-[0_0_20px_rgba(99,102,241,0.4)] hover:shadow-[0_0_30px_rgba(99,102,241,0.6)] border border-white/10 transition-all whitespace-nowrap"
         >
           <Plus size={20} />
           Create New Quiz
-        </button>
+        </motion.button>
       </div>
 
       {/* Stats Section */}
@@ -56,14 +58,14 @@ export default function DashboardPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
-            className="bg-slate-800/40 backdrop-blur-md p-8 rounded-[32px] shadow-sm border border-white/5 flex items-center gap-6 group hover:shadow-md transition-shadow"
+            className={`bg-slate-900/40 backdrop-blur-3xl p-8 rounded-[32px] border ${stat.glow} flex items-center gap-6 group hover:scale-[1.02] transition-all duration-300`}
           >
-            <div className={`${stat.color} ${stat.textColor || 'text-white'} p-4 rounded-2xl ${stat.shadow} transition-transform group-hover:scale-110`}>
+            <div className={`${stat.bg} ${stat.color} p-4 rounded-2xl border border-white/10 transition-transform group-hover:scale-110 shadow-inner`}>
               <stat.icon size={28} />
             </div>
             <div>
-              <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">{stat.label}</p>
-              <p className="text-3xl font-black text-white">{stat.value}</p>
+              <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">{stat.label}</p>
+              <p className={`text-3xl font-black text-slate-50 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]`}>{stat.value}</p>
             </div>
           </motion.div>
         ))}
@@ -72,45 +74,49 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Primary Action Card */}
         <div className="lg:col-span-1 h-full">
-          <div className="bg-[#0a0f1e] rounded-[40px] p-10 text-white border border-white/5 relative overflow-hidden h-full shadow-2xl shadow-black/20 flex flex-col justify-between">
+          <div className="bg-slate-900/40 backdrop-blur-3xl rounded-[40px] p-10 text-slate-50 border border-indigo-500/30 relative overflow-hidden h-full shadow-[0_0_30px_rgba(79,70,229,0.2)] flex flex-col justify-between group">
             <div className="relative z-10 space-y-6">
-              <div className="h-14 w-14 bg-white/10 rounded-2xl flex items-center justify-center">
-                <Sparkles size={28} className="text-[#F8C2A0]" />
+              <div className="h-14 w-14 bg-indigo-500/20 border border-indigo-500/50 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Sparkles size={28} className="text-indigo-400" />
               </div>
-              <h3 className="text-3xl font-black mb-4 leading-tight tracking-tight">AI-Powered Pedagogical Excellence</h3>
-              <p className="text-blue-100 font-medium opacity-80 text-lg leading-relaxed">Transform your course materials into professional-grade assessments in seconds using Gemini 3.</p>
+              <h3 className="text-3xl font-black mb-4 leading-tight tracking-tight text-slate-50">AI-Powered Pedagogical Excellence</h3>
+              <p className="text-slate-300 font-medium opacity-90 text-lg leading-relaxed">Transform your course materials into professional-grade assessments in seconds using Gemini 3.</p>
             </div>
             
             <div className="relative z-10 mt-12">
-              <button 
+              <motion.button 
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
                 onClick={() => navigate('/upload')}
-                className="w-full py-5 bg-[#F8C2A0] text-gray-900 font-black text-lg rounded-2xl flex items-center justify-center gap-3 hover:bg-[#f7b58c] transition-all transform hover:-translate-y-1 shadow-xl shadow-orange-900/20 active:translate-y-0"
+                className="w-full py-5 bg-gradient-to-r from-indigo-500 to-purple-600 text-slate-50 font-black text-lg rounded-full flex items-center justify-center gap-3 shadow-[0_0_20px_rgba(99,102,241,0.5)] border border-white/10"
               >
                 <span>Generate Assessment</span>
                 <ChevronRight size={22} />
-              </button>
+              </motion.button>
             </div>
 
             {/* Decorative background circle */}
-            <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-blue-400/10 rounded-full blur-3xl"></div>
-            <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2"></div>
+            <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-purple-600/20 rounded-full blur-[80px]"></div>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/20 rounded-full blur-[60px] -translate-y-1/2 translate-x-1/2"></div>
           </div>
         </div>
 
         {/* Recent Activity Table */}
         <div className="lg:col-span-2">
-          <div className="bg-slate-800/40 backdrop-blur-md rounded-[40px] shadow-sm border border-white/5 overflow-hidden h-full flex flex-col">
-            <div className="p-8 border-b border-white/5 flex items-center justify-between">
+          <div className="bg-slate-900/40 backdrop-blur-3xl rounded-[40px] shadow-[0_0_30px_rgba(0,0,0,0.3)] border border-white/10 overflow-hidden h-full flex flex-col">
+            <div className="p-8 border-b border-white/10 flex items-center justify-between">
               <div>
-                <h3 className="text-2xl font-black text-white tracking-tight">Recent Activity</h3>
-                <p className="text-gray-400 text-sm font-medium mt-0.5">Your most recently generated assessments.</p>
+                <h3 className="text-2xl font-black text-slate-50 tracking-tight">Recent Activity</h3>
+                <p className="text-slate-300 text-sm font-medium mt-0.5">Your most recently generated assessments.</p>
               </div>
-              <button 
+              <motion.button 
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => navigate('/history')}
-                className="text-sm font-black text-indigo-300 hover:text-indigo-200 flex items-center gap-2 bg-indigo-900/30 px-5 py-2.5 rounded-xl transition-all active:scale-95"
+                className="text-sm font-black text-indigo-300 hover:text-indigo-200 flex items-center gap-2 bg-indigo-500/20 border border-indigo-500/30 px-5 py-2.5 rounded-full transition-all"
               >
                 View Library <ArrowUpRight size={16} />
-              </button>
+              </motion.button>
             </div>
             
             <div className="overflow-x-auto flex-1">
@@ -123,15 +129,15 @@ export default function DashboardPage() {
                     <th className="px-8 py-5 text-right"></th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/5">
+                <tbody className="divide-y divide-white/10">
                   {recentActivity.map((quiz) => (
-                    <tr key={quiz.id} className="hover:bg-slate-800/60 transition-colors group cursor-pointer" onClick={() => navigate(`/quiz-view/${quiz.id}`)}>
+                    <tr key={quiz.id} className="hover:bg-white/5 transition-colors group cursor-pointer" onClick={() => navigate(`/quiz-view/${quiz.id}`)}>
                       <td className="px-8 py-6">
                         <div className="flex items-center gap-4">
-                          <div className="h-10 w-10 rounded-xl bg-indigo-900/30 text-indigo-400 flex items-center justify-center transition-transform group-hover:scale-110 shadow-sm">
+                          <div className="h-10 w-10 rounded-xl bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center transition-transform group-hover:scale-110 shadow-[0_0_10px_rgba(99,102,241,0.2)]">
                             <FileText size={20} />
                           </div>
-                          <span className="text-md font-bold text-white">{quiz.title}</span>
+                          <span className="text-md font-bold text-slate-50">{quiz.title}</span>
                         </div>
                       </td>
                       <td className="px-8 py-6 text-sm font-medium text-gray-500">
@@ -157,10 +163,10 @@ export default function DashboardPage() {
                     <tr>
                       <td colSpan="4" className="px-8 py-20 text-center">
                         <div className="flex flex-col items-center gap-4">
-                          <div className="h-16 w-16 bg-slate-800/60 rounded-2xl flex items-center justify-center">
-                            <FileText size={32} className="text-slate-600" />
+                          <div className="h-16 w-16 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center">
+                            <FileText size={32} className="text-slate-500" />
                           </div>
-                          <p className="text-gray-400 font-bold text-lg">No assessments found.</p>
+                          <p className="text-slate-400 font-bold text-lg">No assessments found.</p>
                           <button 
                             onClick={() => navigate('/upload')}
                             className="text-indigo-400 font-black text-sm hover:underline"

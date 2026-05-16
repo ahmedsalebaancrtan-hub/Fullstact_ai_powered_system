@@ -22,7 +22,13 @@ export default function DashboardLayout() {
   }, []);
 
   return (
-    <div className="flex h-screen w-screen bg-[#0f172a] font-sans overflow-hidden">
+    <div className="flex h-screen w-screen bg-gradient-to-br from-[#020617] via-[#0f172a] to-[#1e1b4b] font-sans overflow-hidden relative">
+      {/* Background Ambience */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-[10%] left-[20%] w-[30%] h-[30%] bg-indigo-500/5 rounded-full blur-[140px]"></div>
+        <div className="absolute bottom-[20%] right-[10%] w-[25%] h-[25%] bg-purple-600/5 rounded-full blur-[120px]"></div>
+      </div>
+      
       {/* Sidebar */}
       <Sidebar 
         isOpen={isSidebarOpen} 
@@ -33,15 +39,15 @@ export default function DashboardLayout() {
 
       {/* Main Content Area */}
       <main 
-        className={`flex-1 flex flex-col transition-all duration-300 h-full relative
-          ${isSidebarOpen ? 'md:ml-[280px]' : 'md:ml-20'}`}
+        className={`flex-1 flex flex-col transition-all duration-300 h-full relative z-10
+          ${isSidebarOpen ? 'md:ml-[290px]' : 'md:ml-28'}`}
       >
         {/* Header */}
-        <header className="h-20 bg-[#0a0f1e]/80 backdrop-blur-md border-b border-white/5 flex items-center justify-between px-6 md:px-10 shrink-0 z-[50]">
+        <header className="h-20 bg-transparent border-b border-white/5 flex items-center justify-between px-6 md:px-10 shrink-0 z-[50]">
           <div className="flex items-center gap-5">
             <button 
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className="p-2.5 text-gray-500 hover:text-white hover:bg-white/5 rounded-xl transition-all"
+              className="p-2.5 text-slate-400 hover:text-slate-50 hover:bg-white/10 rounded-xl transition-all"
             >
               <Menu size={24} />
             </button>
@@ -56,15 +62,15 @@ export default function DashboardLayout() {
           </div>
 
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-3 pl-6 border-l border-white/5">
+            <div className="flex items-center gap-3 pl-6 border-l border-white/10">
               <div className="text-right hidden sm:block">
-                <p className="text-sm font-black text-white">{user?.FullName || 'Researcher'}</p>
-                <p className="text-[10px] text-indigo-300 font-bold uppercase tracking-widest bg-indigo-900/30 px-2 py-0.5 rounded-md inline-block">
+                <p className="text-sm font-black text-slate-50">{user?.FullName || 'Researcher'}</p>
+                <p className="text-[10px] text-indigo-300 font-bold uppercase tracking-widest bg-indigo-500/20 border border-indigo-500/30 px-2 py-0.5 rounded-md inline-block mt-0.5">
                   {user?.Role || 'Academic'}
                 </p>
               </div>
-              <div className="h-11 w-11 rounded-2xl bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-900/20">
-                <User size={22} />
+              <div className="h-11 w-11 rounded-2xl bg-slate-900/40 backdrop-blur-xl border border-white/10 flex items-center justify-center text-slate-50 shadow-[0_0_15px_rgba(255,255,255,0.1)] group">
+                <User size={22} className="text-indigo-400 group-hover:scale-110 transition-transform" />
               </div>
             </div>
           </div>

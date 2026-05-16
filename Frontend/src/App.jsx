@@ -4,6 +4,7 @@ import { Toaster } from 'react-hot-toast';
 import useAuthStore from './store/useAuthStore';
 
 // Lazy load components
+const GetStartedPage = lazy(() => import('./pages/GetStartedPage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const RegisterPage = lazy(() => import('./pages/RegisterPage'));
 const DashboardPage = lazy(() => import('./pages/DashboardPage'));
@@ -24,6 +25,17 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
+// Redirect if already authenticated
+const RedirectIfAuthenticated = ({ children }) => {
+  const token = useAuthStore((state) => state.token);
+  
+  if (token) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return children;
+};
+
 function App() {
   return (
     <Router>
@@ -31,8 +43,10 @@ function App() {
       <Suspense fallback={<div className="flex h-screen items-center justify-center">Loading...</div>}>
         <Routes>
           {/* Public Routes */}
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/" element={<RedirectIfAuthenticated><GetStartedPage /></RedirectIfAuthenticated>} />
+          <Route path="/get-started" element={<RedirectIfAuthenticated><GetStartedPage /></RedirectIfAuthenticated>} />
+          <Route path="/login" element={<RedirectIfAuthenticated><LoginPage /></RedirectIfAuthenticated>} />
+          <Route path="/register" element={<RedirectIfAuthenticated><RegisterPage /></RedirectIfAuthenticated>} />
 
           {/* Protected Routes (Authenticated) */}
           <Route 
@@ -46,12 +60,10 @@ function App() {
             <Route path="/upload" element={<UploadPage />} />
             <Route path="/history" element={<HistoryPage />} />
             <Route path="/quiz-view/:id" element={<QuizViewPage />} />
-
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
           </Route>
 
           {/* Fallback */}
-          <Route path="*" element={<Navigate to="/login" replace />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>
     </Router>
