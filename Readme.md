@@ -46,13 +46,6 @@ Follow these steps to clone, configure, and run the entire system locally.
 1. Navigate to the backend directory:
    ```bash
    cd backend
-   2. 
- PORT=9090
-DB_HOST=localhost
-DB_USER=your_postgres_user
-DB_PASSWORD=your_postgres_password
-DB_NAME=quiz_generator_db
-DB_PORT=5432
 
 # AI Configuration
 GEMINI_API_KEY=your_valid_google_gemini_api_key
