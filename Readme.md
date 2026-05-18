@@ -76,7 +76,7 @@ The **Get Started** page welcomes users with fluid animations, introducing the 3
 A highly translucent glassmorphism login panel featuring high-contrast text fields, secure authentication, and optimized micro-interactions
 
 <p align="center">
-  <img src="./Frontend/assets/login.png alt="Login Portal" width="90%" />
+  <img src="./Frontend/assets/login.png" alt="Login Portal" width="90%" />
 </p>
 
 
