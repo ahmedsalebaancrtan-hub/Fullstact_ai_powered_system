@@ -48,7 +48,7 @@ export default function GetStartedPage() {
   ];
 
   return (
-    <div className="h-screen w-screen bg-gradient-to-br from-[#020617] via-[#0f172a] to-[#1e1b4b] relative overflow-hidden flex flex-col">
+    <div className="h-screen w-full bg-gradient-to-br from-[#020617] via-[#0f172a] to-[#1e1b4b] relative overflow-hidden flex flex-col items-center justify-between py-8">
       
       {/* Ambient Light Orbs */}
       <div className="absolute inset-0 pointer-events-none">
@@ -56,56 +56,57 @@ export default function GetStartedPage() {
         <div className="absolute bottom-[20%] right-[5%] w-[35%] h-[35%] bg-purple-600/10 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }}></div>
       </div>
 
-      <div className="flex-1 overflow-y-auto w-full relative z-10 flex flex-col items-center justify-start pt-12 pb-12 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
-        <AnimatePresence>
-          {!isExiting && (
-            <motion.div 
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 0.5, ease: "easeInOut" }}
-              className="flex flex-col items-center text-center px-4 md:px-6 w-full max-w-6xl"
-            >
-            {/* Hero Section */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.1 }}
-              className="max-w-4xl mx-auto mb-8"
-            >
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-slate-50 leading-tight tracking-tight drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">
-                Empower Your Learning with Academic AI.
-              </h1>
-            </motion.div>
+      <AnimatePresence>
+        {!isExiting && (
+          <motion.div 
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ duration: 0.5, ease: "easeInOut" }}
+            className="flex flex-col items-center justify-between h-full w-full max-w-6xl px-4 md:px-6 relative z-10"
+          >
+            <div className="flex flex-col items-center justify-center flex-1 w-full mt-4 md:mt-8">
+              {/* Hero Section */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.1 }}
+                className="max-w-4xl mx-auto mb-8 text-center"
+              >
+                <h1 className="text-4xl md:text-5xl lg:text-5xl font-black text-slate-50 leading-tight tracking-tight drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">
+                  Empower Your Learning with Academic AI.
+                </h1>
+              </motion.div>
 
-            {/* How It Works - Glass Cards */}
-            <motion.div 
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full mb-12"
-            >
-              {cards.map((card, index) => (
-                <motion.div 
-                  key={index}
-                  variants={itemVariants}
-                  className="bg-white/5 backdrop-blur-2xl border border-white/10 rounded-[32px] p-6 text-left hover:bg-white/10 transition-colors duration-300 shadow-[0_0_20px_rgba(0,0,0,0.3)]"
-                >
-                  <div className="w-14 h-14 rounded-2xl bg-slate-900/50 border border-white/10 flex items-center justify-center mb-6 shadow-inner">
-                    {card.icon}
-                  </div>
-                  <h3 className="text-xl font-black text-slate-50 mb-3">{card.title}</h3>
-                  <p className="text-slate-400 font-medium text-sm leading-relaxed">
-                    {card.description}
-                  </p>
-                </motion.div>
-              ))}
-            </motion.div>
+              {/* How It Works - Glass Cards */}
+              <motion.div 
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+                className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full"
+              >
+                {cards.map((card, index) => (
+                  <motion.div 
+                    key={index}
+                    variants={itemVariants}
+                    className="bg-white/5 backdrop-blur-2xl border border-white/10 rounded-[32px] p-6 text-left hover:bg-white/10 transition-colors duration-300 shadow-[0_0_20px_rgba(0,0,0,0.3)]"
+                  >
+                    <div className="w-14 h-14 rounded-2xl bg-slate-900/50 border border-white/10 flex items-center justify-center mb-3 shadow-inner">
+                      {card.icon}
+                    </div>
+                    <h3 className="text-xl font-black text-slate-50 mb-2">{card.title}</h3>
+                    <p className="text-slate-400 font-medium text-sm leading-relaxed">
+                      {card.description}
+                    </p>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </div>
 
             {/* Miniature CTA Button - Forced Visibility */}
             <motion.div
               initial={{ opacity: 1, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.6 }}
-              className="mt-6 flex justify-center w-full relative z-[100] pb-10"
+              className="mb-6 flex justify-center w-full relative z-50 shrink-0"
             >
               <motion.button
                 onClick={handleStart}
@@ -121,7 +122,6 @@ export default function GetStartedPage() {
           </motion.div>
         )}
       </AnimatePresence>
-      </div>
     </div>
   );
 }
