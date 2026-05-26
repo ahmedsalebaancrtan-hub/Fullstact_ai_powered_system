@@ -11,7 +11,13 @@ const DashboardPage = lazy(() => import('./pages/DashboardPage'));
 const UploadPage = lazy(() => import('./pages/UploadPage'));
 const HistoryPage = lazy(() => import('./pages/HistoryPage'));
 const QuizViewPage = lazy(() => import('./pages/QuizViewPage'));
+const ActiveQuizPage = lazy(() => import('./pages/ActiveQuizPage'));
+const TeacherAnalyticsModule = lazy(() => import('./pages/TeacherAnalyticsModule'));
+const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 const DashboardLayout = lazy(() => import('./layouts/DashboardLayout'));
+const AdminLayout = lazy(() => import('./layouts/AdminLayout'));
+
+import RoleGuard from './components/RoleGuard';
 
 // Protected Route Wrapper - Ensures users cannot access core workspaces without proper intent (authentication)
 const ProtectedRoute = ({ children }) => {
@@ -50,6 +56,21 @@ export default function App() {
             <Route path="/upload" element={<UploadPage />} />
             <Route path="/history" element={<HistoryPage />} />
             <Route path="/quiz-view/:id" element={<QuizViewPage />} />
+            <Route path="/active-quiz/:id" element={<ActiveQuizPage />} />
+            <Route path="/analytics" element={<TeacherAnalyticsModule />} />
+          </Route>
+
+          {/* Admin Workspace */}
+          <Route 
+            element={
+              <ProtectedRoute>
+                <RoleGuard behavior="redirect" allowedRoles={['admin']}>
+                  <AdminLayout />
+                </RoleGuard>
+              </ProtectedRoute>
+            }
+          >
+            <Route path="/admin-dashboard" element={<AdminDashboard />} />
           </Route>
 
           {/* Global Catch-all to force Get Started entry */}

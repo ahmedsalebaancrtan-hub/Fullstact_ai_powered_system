@@ -3,8 +3,20 @@ import api from '../api/axios';
 
 const useAuthStore = create((set) => ({
   token: localStorage.getItem('token') || null,
-  user: null,
-  
+  // ── Session Hydration ──────────────────────────────────────────────────────
+  // Parse the persisted user from localStorage at store-init time.
+  // This is what survives a hard refresh — no user = blank role = broken UI.
+  user: (() => {
+    try {
+      const raw = localStorage.getItem('user');
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      localStorage.removeItem('user');
+      return null;
+    }
+  })(),
+  // ───────────────────────────────────────────────────────────────────────────
+
   setToken: (token) => {
     if (token) {
       localStorage.setItem('token', token);
@@ -14,7 +26,15 @@ const useAuthStore = create((set) => ({
     set({ token });
   },
 
-  setUser: (user) => set({ user }),
+  setUser: (user) => {
+    // Keep localStorage in sync when user is set externally
+    if (user) {
+      localStorage.setItem('user', JSON.stringify(user));
+    } else {
+      localStorage.removeItem('user');
+    }
+    set({ user });
+  },
 
   login: async (email, password) => {
     try {
@@ -25,7 +45,11 @@ const useAuthStore = create((set) => ({
       // Backend returns data: { Access_token, User, ... }
       const { Access_token, User } = response.data.data;
       
+      // ── Persist both token AND user object so refreshes survive ────────────
       localStorage.setItem('token', Access_token);
+      localStorage.setItem('user', JSON.stringify(User));
+      // ───────────────────────────────────────────────────────────────────────
+      
       set({ token: Access_token, user: User });
       return { success: true };
     } catch (error) {
@@ -52,7 +76,10 @@ const useAuthStore = create((set) => ({
       const user = response.data?.data?.User;
       
       if (token && user) {
+        // ── Persist both token AND user object ─────────────────────────────
         localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(user));
+        // ───────────────────────────────────────────────────────────────────
         set({ token, user });
       }
 
@@ -75,7 +102,10 @@ const useAuthStore = create((set) => ({
   },
 
   logout: () => {
+    // ── Clear ALL persisted auth data ────────────────────────────────────────
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    // ─────────────────────────────────────────────────────────────────────────
     set({ token: null, user: null });
     window.location.href = '/login';
   },

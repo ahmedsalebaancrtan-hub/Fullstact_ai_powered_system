@@ -4,76 +4,32 @@ An advanced, AI-powered educational assessment platform designed to help student
 
 ---
 
-## 🚀 Key Features
 
-* **Smart Content Analysis:** Deep AI parsing of uploaded PDFs, text documents, or pasted study materials.
-* **Multi-Format Quiz Generation:** Automatically creates Multiple Choice Questions (MCQs), True/False statements, and Short Answers in seconds.
-* **Real-Time Pedagogical Feedback:** Delivers immediate scoring, accuracy rates, and comprehensive summaries explaining *why* answers are correct or incorrect.
-* **Premium Aura Glass UI:** A modern, high-contrast user interface with seamless, fluid layout animations managed by Framer Motion.
-* **Direct Authentication Flow:** Secured system access routing that forces a clean entry structure: `Get Started -> Login -> Dashboard`.
 
----
+## Overview
+QuizGen AI is a modern, high-performance Learning Management System (LMS) designed for educational institutions. It leverages AI to streamline quiz generation, material management, and role-based administration.
 
-## 🛠️ Tech Stack
+## System Architecture
+This platform utilizes a robust full-stack architecture:
+* **Frontend:** React, TypeScript, Tailwind CSS, Framer Motion (Modern "Aura Glass" UI).
+* **Backend:** Go (Golang) with Gin Framework.
+* **Database:** PostgreSQL with GORM ORM.
+* **Authentication:** JWT-based secure role-based access control (RBAC).
 
-### Frontend
-* **Framework:** React.js (Vite)
-* **Styling:** Tailwind CSS (Aura Glass Customizations & Invisible Scroll Architecture)
-* **Animations:** Framer Motion
-* **Icons:** Lucide React
-
-### Backend & Database
-* **Language:** Go (Golang)
-* **Router / Framework:** Gin Gonic
-* **Database:** PostgreSQL (Core Schemas) & Firebase (User Management)
-* **AI Engine Integration:** Google Gemini API / OpenAI GPT-4
+## Features
+* **Role-Based Access Control (RBAC):** Strict separation of duties between Admins, Teachers, and Students.
+* **Intelligent Admin Portal:** A central "Command Center" for platform monitoring, teacher management, and audit streaming.
+* **Teacher Tools:** Efficient material uploading, quiz generation, and analytics tracking.
+* **Student Experience:** Intuitive dashboard for viewing available assessments and tracking results.
+* **Security:** Middleware-enforced route protection and database-level query scoping.
 
 ---
-
-## ⚙️ Setup & Installation
-
-Follow these steps to clone, configure, and run the entire system locally.
-
-### Prerequisites
-* Node.js (v18 or higher)
-* Go (v1.20 or higher)
-* PostgreSQL instance running locally or on the cloud
-
----
-
-### 1. Backend Setup (Go)
-
-1. Navigate to the backend directory:
-   ```bash
-   cd backend
-
-# AI Configuration
-GEMINI_API_KEY=your_valid_google_gemini_api_key
-
-
-Download dependencies and run the server:
-go mod tidy
-go run main.go
-
-Frontend Setup (React)
-Navigate to the frontend directory:
-cd frontend
-npm install
-Start the frontend development server:
-npm run dev
-
-
-## 📸 System Screenshots
-
-Here is a visual overview of the **Academic AI** platform showcasing the premium **Aura Glass** user interface, clean typography, and optimized responsive layouts.
-
 ### 1. Welcome & Entry Point (`/`)
 The **Get Started** page welcomes users with fluid animations, introducing the 3 core pillars of the system (Upload, Generate, Analyze) before offering a high-contrast transition button
 
 <p align="center">
   <img src="./Frontend/assets/Getstarted.png" alt="Get Started Page" width="90%" />
 </p>
-
 
 
 2. Authentication Portal (`/login`)
@@ -83,11 +39,32 @@ A highly translucent glassmorphism login panel featuring high-contrast text fiel
   <img src="./Frontend/assets/login.png" alt="Login Portal" width="90%" />
 </p>
 
+## Dashboard Previews
 
-Educator & Student Dashboard (`/dashboard`)
-The central hub displaying immediate stat cards for generated metrics, dynamic asset tables, and clean navigation with hidden scroll functionality.
-
-
+### 1. Admin Dashboard (Command Center)
+*The central hub for superuser monitoring, educator management, and system audits.*
 <p align="center">
-  <img src="./Frontend/assets/dashboard.png" alt="System Dashboard" width="90%" />
+  <img src="./Frontend/assets/admindashboard.png" alt="System Dashboard" width="90%" />
 </p>
+
+### 2. Teacher Dashboard
+*Manage learning materials, generate AI-powered quizzes, and analyze student performance.*
+<p align="center">
+  <img src="./Frontend/assets/teacherdashboard.png" alt="System Dashboard" width="90%" />
+</p>
+
+### 3. Student Dashboard
+*A personalized view of available assessments and academic progress.*
+<p align="center">
+  <img src="./Frontend/assets/studentdash.png" alt="System Dashboard" width="90%" />
+</p>
+
+---
+
+## Technical Highlights
+
+### Role-Based Security (Backend Bypass)
+To ensure the Admin has full visibility while maintaining student privacy, we implemented a custom GORM Scope:
+```go
+// Example of Admin Bypass Logic
+db.Scopes(middleware.GORMAdminBypass(c, "created_by_id", userID)).Find(&records)

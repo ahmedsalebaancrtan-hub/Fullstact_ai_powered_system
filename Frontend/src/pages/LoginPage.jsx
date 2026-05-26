@@ -13,7 +13,19 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   
   const login = useAuthStore((state) => state.login);
+  const token = useAuthStore((state) => state.token);
+  const user = useAuthStore((state) => state.user);
   const navigate = useNavigate();
+
+  React.useEffect(() => {
+    if (token && user) {
+      if (user.role?.toLowerCase() === 'admin' || user.Role?.toLowerCase() === 'admin') {
+        navigate('/admin-dashboard', { replace: true });
+      } else {
+        navigate('/dashboard', { replace: true });
+      }
+    }
+  }, [token, user, navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -24,7 +36,14 @@ export default function LoginPage() {
     
     if (result.success) {
       toast.success("Welcome back", { id: loadingToast });
-      setTimeout(() => navigate('/dashboard'), 800);
+      const user = useAuthStore.getState().user;
+      setTimeout(() => {
+        if (user && (user.role?.toLowerCase() === 'admin' || user.Role?.toLowerCase() === 'admin')) {
+          navigate('/admin-dashboard');
+        } else {
+          navigate('/dashboard');
+        }
+      }, 800);
     } else {
       toast.error(result.message, { id: loadingToast });
       setLoading(false);

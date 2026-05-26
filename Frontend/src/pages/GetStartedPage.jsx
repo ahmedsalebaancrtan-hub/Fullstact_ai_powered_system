@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { UploadCloud, FileText, BarChart3, ChevronRight } from 'lucide-react';
+import useAuthStore from '../store/useAuthStore';
 
 export default function GetStartedPage() {
   const navigate = useNavigate();
@@ -10,7 +11,28 @@ export default function GetStartedPage() {
   const handleStart = () => {
     setIsExiting(true);
     setTimeout(() => {
-      navigate('/login');
+      const token = localStorage.getItem('token') || useAuthStore.getState().token;
+      if (!token) {
+        navigate('/login');
+        return;
+      }
+
+      const storedUser = localStorage.getItem('user');
+      let user = useAuthStore.getState().user;
+      if (!user && storedUser) {
+        try {
+          user = JSON.parse(storedUser);
+        } catch (e) {
+          console.error("Failed to parse user from localStorage", e);
+        }
+      }
+
+      const role = (user?.role || user?.Role || '').toLowerCase();
+      if (role === 'admin') {
+        navigate('/admin-dashboard');
+      } else {
+        navigate('/dashboard');
+      }
     }, 500);
   };
 

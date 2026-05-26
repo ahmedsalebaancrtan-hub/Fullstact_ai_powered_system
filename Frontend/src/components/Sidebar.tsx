@@ -9,11 +9,35 @@ import {
   BarChart3,
   BookOpen,
   ClipboardList,
-  ShieldCheck
+  ShieldCheck,
+  LucideIcon
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const Sidebar = ({ isOpen, toggleSidebar, logout, user }) => {
+export interface User {
+  role?: string;
+  Role?: string;
+  FullName?: string;
+  full_name?: string;
+  name?: string;
+  email?: string;
+  Email?: string;
+}
+
+export interface SidebarProps {
+  isOpen: boolean;
+  toggleSidebar: () => void;
+  logout: () => void;
+  user: User | null;
+}
+
+interface MenuItem {
+  name: string;
+  icon: LucideIcon;
+  path: string;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar, logout, user }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -21,10 +45,9 @@ const Sidebar = ({ isOpen, toggleSidebar, logout, user }) => {
   const role = (user?.role || user?.Role || '').toLowerCase();
   const isAdmin   = role === 'admin';
   const isTeacher = role === 'teacher';
-  const isStudent = role === 'student';
 
   // Build menu based on role
-  const menuItems = [];
+  const menuItems: MenuItem[] = [];
 
   if (isAdmin) {
     menuItems.push(

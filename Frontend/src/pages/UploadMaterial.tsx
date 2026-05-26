@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, DragEvent, ChangeEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FileText, 
@@ -17,22 +17,22 @@ import api from '../api/axios';
 import useQuizStore from '../store/useQuizStore';
 import useAuthStore from '../store/useAuthStore';
 
-export default function UploadPage() {
+const UploadMaterial: React.FC = () => {
   const navigate = useNavigate();
-  const user = useAuthStore((state) => state.user);
-  const { isLoading, setLoading, setCurrentQuiz, addRecentQuiz, setError } = useQuizStore();
+  const user = useAuthStore((state: any) => state.user);
+  const { isLoading, setLoading, setCurrentQuiz, addRecentQuiz, setError } = useQuizStore() as any;
 
-  const [title, setTitle] = useState('');
-  const [file, setFile] = useState(null);
-  const [dragActive, setDragActive] = useState(false);
-  const [difficulty, setDifficulty] = useState('Medium');
-  const [questionTypes, setQuestionTypes] = useState(['Multiple Choice']);
-  const [numQuestions, setNumQuestions] = useState(5);
-  const [timeLimit, setTimeLimit] = useState(30);
-  const [status, setStatus] = useState('PUBLISHED');
-  const [showConfigModal, setShowConfigModal] = useState(false);
+  const [title, setTitle] = useState<string>('');
+  const [file, setFile] = useState<File | null>(null);
+  const [dragActive, setDragActive] = useState<boolean>(false);
+  const [difficulty, setDifficulty] = useState<string>('Medium');
+  const [questionTypes, setQuestionTypes] = useState<string[]>(['Multiple Choice']);
+  const [numQuestions, setNumQuestions] = useState<number>(5);
+  const [timeLimit, setTimeLimit] = useState<number>(30);
+  const [status, setStatus] = useState<string>('PUBLISHED');
+  const [showConfigModal, setShowConfigModal] = useState<boolean>(false);
 
-  const handleFileChange = (selectedFile) => {
+  const handleFileChange = (selectedFile: File) => {
     if (selectedFile && selectedFile.type === 'application/pdf') {
       setFile(selectedFile);
       if (!title) {
@@ -45,7 +45,7 @@ export default function UploadPage() {
     }
   };
 
-  const handleDrag = (e) => {
+  const handleDrag = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     if (e.type === "dragenter" || e.type === "dragover") {
@@ -55,7 +55,7 @@ export default function UploadPage() {
     }
   };
 
-  const handleDrop = (e) => {
+  const handleDrop = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
@@ -64,7 +64,7 @@ export default function UploadPage() {
     }
   };
 
-  const toggleQuestionType = (type) => {
+  const toggleQuestionType = (type: string) => {
     if (questionTypes.includes(type)) {
       if (questionTypes.length > 1) {
         setQuestionTypes(questionTypes.filter(t => t !== type));
@@ -84,7 +84,7 @@ export default function UploadPage() {
     const loadingToast = toast.loading("AI is designing your assessment...");
 
     try {
-      const qTypeMapping = {
+      const qTypeMapping: Record<string, string> = {
         'Multiple Choice': 'MCQ',
         'True/False': 'TrueFalse',
         'Short Answer': 'ShortAnswer'
@@ -118,7 +118,7 @@ export default function UploadPage() {
       } else {
         throw new Error(quizResp.data.message || "Failed to generate quiz.");
       }
-    } catch (err) {
+    } catch (err: any) {
       const backendError = err.response?.data?.message || err.response?.data?.error || err.message || "AI is busy, please try again in a few seconds.";
       toast.error(backendError, { id: loadingToast });
       setError(backendError);
@@ -140,13 +140,11 @@ export default function UploadPage() {
       </div>
 
       <div className="bg-[#0a0f1e] rounded-[40px] shadow-2xl border border-gray-800 overflow-hidden flex-1 flex flex-col relative">
-        {/* Background Ambience similar to Login */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <div className="absolute top-0 right-0 w-[60%] h-[60%] bg-indigo-900/10 rounded-full blur-[120px]"></div>
           <div className="absolute bottom-0 left-[-10%] w-[50%] h-[50%] bg-blue-900/10 rounded-full blur-[100px]"></div>
         </div>
 
-        {/* Scrollable Inner Container */}
         <div className="flex-1 overflow-y-auto p-6 md:p-12 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] relative z-10">
           <div className="space-y-10">
             
@@ -156,7 +154,7 @@ export default function UploadPage() {
               <input 
                 type="text"
                 value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
                 placeholder="e.g. Introduction to Quantum Physics"
                 className="w-full px-8 py-6 bg-slate-900/50 border border-white/5 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500/50 transition-all text-xl text-white placeholder:text-gray-600 font-medium"
               />
@@ -179,14 +177,13 @@ export default function UploadPage() {
                       : 'border-white/10 bg-slate-900/50 hover:border-white/20'
                 }`}
               >
-                {/* Visual glow backdrop for modern aura glass */}
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-indigo-500/5 rounded-full blur-[80px] pointer-events-none"></div>
 
                 <input 
                   type="file"
                   id="pdf-upload"
                   accept="application/pdf"
-                  onChange={(e) => {
+                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
                     if (e.target.files && e.target.files[0]) {
                       handleFileChange(e.target.files[0]);
                     }
@@ -244,6 +241,7 @@ export default function UploadPage() {
                 {['Easy', 'Medium', 'Hard'].map((level) => (
                   <button
                     key={level}
+                    type="button"
                     onClick={() => setDifficulty(level)}
                     className={`py-6 px-6 text-lg font-bold rounded-2xl transition-all border flex items-center justify-between ${
                       difficulty === level 
@@ -299,7 +297,7 @@ export default function UploadPage() {
                   min="1"
                   max="20"
                   value={numQuestions}
-                  onChange={(e) => setNumQuestions(parseInt(e.target.value))}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) => setNumQuestions(parseInt(e.target.value))}
                   className="w-full h-3 bg-slate-800 rounded-full appearance-none cursor-pointer accent-[#F8C2A0]"
                 />
                 <div className="flex justify-between mt-6 text-[13px] font-black text-gray-500 uppercase tracking-widest">
@@ -312,6 +310,7 @@ export default function UploadPage() {
             {/* Submit Button */}
             <div className="pt-8 w-full">
               <button 
+                type="button"
                 onClick={() => {
                   if (!title.trim() || !file) {
                     toast.error("Please provide both a title and a study PDF.");
@@ -364,7 +363,7 @@ export default function UploadPage() {
                     type="number"
                     min="1"
                     value={timeLimit}
-                    onChange={(e) => setTimeLimit(parseInt(e.target.value))}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) => setTimeLimit(parseInt(e.target.value))}
                     className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-white font-bold text-lg"
                   />
                 </div>
@@ -373,6 +372,7 @@ export default function UploadPage() {
                   <label className="block text-sm font-black text-gray-400 uppercase tracking-widest mb-2">Visibility</label>
                   <div className="grid grid-cols-2 gap-3">
                     <button 
+                      type="button"
                       onClick={() => setStatus('PUBLISHED')}
                       className={`py-3 px-4 rounded-xl font-bold transition-all border ${
                         status === 'PUBLISHED' 
@@ -383,6 +383,7 @@ export default function UploadPage() {
                       Publish Now
                     </button>
                     <button 
+                      type="button"
                       onClick={() => setStatus('DRAFT')}
                       className={`py-3 px-4 rounded-xl font-bold transition-all border ${
                         status === 'DRAFT' 
@@ -397,12 +398,14 @@ export default function UploadPage() {
 
                 <div className="flex gap-4 pt-4">
                   <button 
+                    type="button"
                     onClick={() => setShowConfigModal(false)}
                     className="flex-1 py-4 bg-white/5 text-gray-300 rounded-xl font-bold hover:bg-white/10 transition-colors"
                   >
                     Cancel
                   </button>
                   <button 
+                    type="button"
                     onClick={handleGenerate}
                     className="flex-1 py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-black flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(99,102,241,0.4)] transition-all"
                   >
@@ -470,3 +473,5 @@ export default function UploadPage() {
     </motion.div>
   );
 }
+
+export default UploadMaterial;

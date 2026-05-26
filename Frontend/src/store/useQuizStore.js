@@ -4,6 +4,7 @@ import api from '../api/axios';
 const useQuizStore = create((set) => ({
   currentQuiz: null,
   recentQuizzes: [],
+  myResults: [],
   isLoading: false,
   error: null,
 
@@ -29,6 +30,35 @@ const useQuizStore = create((set) => ({
       });
     }
   },
+
+  fetchAvailableQuizzes: async () => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await api.get('/api/quiz/available');
+      const quizzes = response.data.data || [];
+      set({ recentQuizzes: quizzes, isLoading: false });
+    } catch (err) {
+      const backendError = err.response?.data?.message || err.response?.data?.error || "Failed to fetch available quizzes.";
+      set({ error: backendError, isLoading: false });
+    }
+  },
+
+  fetchMyResults: async () => {
+    try {
+      const response = await api.get('/api/quiz/my-results');
+      // ── Diagnostic log — verify backend payload in DevTools console ─────────
+      console.log('[fetchMyResults] Raw API response:', response.data);
+      // ─────────────────────────────────────────────────────────────────────────
+
+      const results = response.data?.data || [];
+      console.log('[fetchMyResults] Parsed results array:', results);
+      set({ myResults: results });
+    } catch (err) {
+      console.error('[fetchMyResults] Failed to fetch student results:', err);
+      console.error('[fetchMyResults] Response data:', err.response?.data);
+    }
+  },
+
   
   setCurrentQuiz: (quiz) => set({ currentQuiz: quiz, isLoading: false, error: null }),
   

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, Navigate, useLocation } from 'react-router-dom';
 import { Menu, User } from 'lucide-react';
 import useAuthStore from '../store/useAuthStore';
 import Sidebar from '../components/Sidebar';
@@ -7,6 +7,12 @@ import Sidebar from '../components/Sidebar';
 export default function DashboardLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 1024);
   const { user, logout } = useAuthStore();
+  const location = useLocation();
+
+  // ── RBAC: derive role once ─────────────────────────────────────────────────
+  const role = (user?.role || user?.Role || '').toLowerCase();
+  const isAdmin = role === 'admin';
+  // ──────────────────────────────────────────────────────────────────────────
 
   // Auto-collapse sidebar on smaller screens
   useEffect(() => {
@@ -20,6 +26,11 @@ export default function DashboardLayout() {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  // Redirect AFTER hooks to satisfy React's Rules of Hooks
+  if (isAdmin) {
+    return <Navigate to="/admin-dashboard" state={{ from: location }} replace />;
+  }
 
   return (
     <div className="flex h-screen w-screen bg-gradient-to-br from-[#020617] via-[#0f172a] to-[#1e1b4b] font-sans overflow-hidden relative">
