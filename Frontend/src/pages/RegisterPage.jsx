@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, Lock, Eye, EyeOff, Loader2, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import useAuthStore from '../store/useAuthStore';
+import useAuthStore, { STUDENT_DASHBOARD_PATH } from '../store/useAuthStore';
 import PublicNavbar from '../components/PublicNavbar';
 
 export default function RegisterPage() {
@@ -30,7 +30,7 @@ export default function RegisterPage() {
     
     if (result.success) {
       toast.success("Account Created", { id: loadingToast });
-      setTimeout(() => navigate('/dashboard'), 1000);
+      setTimeout(() => navigate(result.redirectPath || STUDENT_DASHBOARD_PATH), 1000);
     } else {
       toast.error(result.message, { id: loadingToast });
       setLoading(false);

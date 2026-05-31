@@ -26,6 +26,27 @@ interface Teacher {
   email: string;
   role?: string;
   Role?: string;
+  created_at?: string;
+}
+
+interface PlatformUser {
+  id: number;
+  full_name: string;
+  email: string;
+  role?: string;
+  Role?: string;
+  created_at?: string;
+}
+
+interface Quiz {
+  id: number;
+  title?: string;
+  difficulty?: string;
+  created_at?: string;
+  created_by_id?: number;
+  CreatedByID?: number;
+  questions?: unknown[];
+  Questions?: unknown[];
 }
 
 interface Stats {
@@ -42,11 +63,16 @@ interface ActivityLog {
   timestamp: string;
 }
 
+type AdminView = 'teachers' | 'students' | 'quizzes';
+
 export default function AdminDashboard() {
   const [teachers, setTeachers] = useState<Teacher[]>([]);
+  const [students, setStudents] = useState<PlatformUser[]>([]);
+  const [quizzes, setQuizzes] = useState<Quiz[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [activeView, setActiveView] = useState<AdminView>('teachers');
   
   // Stats state
   const [stats, setStats] = useState<Stats>({
@@ -100,6 +126,8 @@ export default function AdminDashboard() {
         const teachersCount = allUsers.filter(u => (u.role || u.Role || '').toLowerCase() === 'teacher').length;
         const quizzesCount = quizzesList.length;
 
+        setStudents(allUsers.filter(u => (u.role || u.Role || '').toLowerCase() === 'student'));
+        setQuizzes(quizzesList);
         setStats({
           students: studentsCount,
           teachers: teachersCount,
@@ -275,32 +303,296 @@ export default function AdminDashboard() {
     (t.email || '').toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const filteredStudents = students.filter(s =>
+    (s.full_name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (s.email || '').toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const filteredQuizzes = quizzes.filter(q =>
+    (q.title || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (q.difficulty || '').toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const activeViewMeta = {
+    teachers: {
+      title: 'Educator Directory',
+      label: 'Platform',
+      count: teachers.length,
+      icon: Users,
+      accent: 'text-indigo-400',
+      searchPlaceholder: 'Search teachers...',
+    },
+    students: {
+      title: 'Student Directory',
+      label: 'Learners',
+      count: students.length,
+      icon: GraduationCap,
+      accent: 'text-indigo-300',
+      searchPlaceholder: 'Search students...',
+    },
+    quizzes: {
+      title: 'Quiz Inventory',
+      label: 'Generated',
+      count: quizzes.length,
+      icon: FileText,
+      accent: 'text-emerald-300',
+      searchPlaceholder: 'Search quizzes...',
+    },
+  }[activeView];
+
+  const StatCard = ({
+    view,
+    title,
+    value,
+    icon: Icon,
+    gradient,
+    iconClassName,
+  }: {
+    view: AdminView;
+    title: string;
+    value: number;
+    icon: typeof GraduationCap;
+    gradient: string;
+    iconClassName: string;
+  }) => {
+    const isActive = activeView === view;
+
+    return (
+      <motion.button
+        type="button"
+        whileHover={{ y: -5 }}
+        whileTap={{ scale: 0.98 }}
+        onClick={() => setActiveView(view)}
+        aria-pressed={isActive}
+        className={`relative text-left ${gradient} backdrop-blur-md p-6 rounded-3xl border overflow-hidden group shadow-lg transition-all focus:outline-none focus:ring-2 focus:ring-indigo-400/60 ${
+          isActive ? 'border-indigo-300/50 shadow-[0_0_28px_rgba(99,102,241,0.22)]' : 'border-white/10'
+        }`}
+      >
+        <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full blur-2xl group-hover:bg-white/15 transition-all"></div>
+        <div className="flex items-center gap-4">
+          <div className={`p-4 border rounded-2xl ${iconClassName}`}>
+            <Icon size={24} />
+          </div>
+          <div>
+            <p className="text-slate-400 font-bold uppercase tracking-wider text-xs">{title}</p>
+            <h3 className="text-3xl font-black text-white mt-1">
+              {loading ? '...' : value}
+            </h3>
+          </div>
+        </div>
+      </motion.button>
+    );
+  };
+
+  const EmptyTableState = ({ icon: Icon, message }: { icon: typeof Users; message: string }) => (
+    <tr>
+      <td colSpan={4} className="px-8 py-20 text-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-16 w-16 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center">
+            <Icon size={32} className="text-slate-500" />
+          </div>
+          <p className="text-slate-400 font-bold text-lg">{message}</p>
+        </div>
+      </td>
+    </tr>
+  );
+
+  const StudentTable = () => (
+    <table className="w-full">
+      <thead className="bg-white/5 text-gray-400 text-[11px] uppercase font-black tracking-[0.2em] sticky top-0 backdrop-blur-md z-20">
+        <tr>
+          <th className="px-6 md:px-8 py-5 text-left">Student Name</th>
+          <th className="px-6 md:px-8 py-5 text-left font-black">Email Address</th>
+          <th className="px-8 py-5 text-center">Role</th>
+          <th className="px-8 py-5 text-right">Joined</th>
+        </tr>
+      </thead>
+      <tbody className="divide-y divide-white/10">
+        {loading ? (
+          <tr>
+            <td colSpan={4} className="px-8 py-20 text-center text-gray-500 font-bold">
+              Loading student data...
+            </td>
+          </tr>
+        ) : filteredStudents.length > 0 ? (
+          filteredStudents.map((student, idx) => (
+            <tr key={student.id || idx} className="hover:bg-white/5 transition-colors">
+              <td className="px-6 md:px-8 py-6">
+                <div className="flex items-center gap-4">
+                  <div className="h-10 w-10 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 flex items-center justify-center font-black">
+                    {student.full_name ? student.full_name.charAt(0).toUpperCase() : 'S'}
+                  </div>
+                  <span className="font-bold text-slate-50 text-base">{student.full_name || 'Unnamed Student'}</span>
+                </div>
+              </td>
+              <td className="px-6 md:px-8 py-6 text-slate-300 font-medium">{student.email}</td>
+              <td className="px-8 py-6 text-center">
+                <span className="px-3 py-1 bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 rounded-full text-xs font-black uppercase tracking-widest">
+                  Student
+                </span>
+              </td>
+              <td className="px-8 py-6 text-right text-slate-400 font-semibold text-sm">
+                {student.created_at ? new Date(student.created_at).toLocaleDateString() : 'N/A'}
+              </td>
+            </tr>
+          ))
+        ) : (
+          <EmptyTableState icon={GraduationCap} message="No students registered." />
+        )}
+      </tbody>
+    </table>
+  );
+
+  const TeacherTable = () => (
+    <table className="w-full">
+      <thead className="bg-white/5 text-gray-400 text-[11px] uppercase font-black tracking-[0.2em] sticky top-0 backdrop-blur-md z-20">
+        <tr>
+          <th className="px-6 md:px-8 py-5 text-left">Teacher Name</th>
+          <th className="px-6 md:px-8 py-5 text-left font-black">Email Address</th>
+          <th className="px-8 py-5 text-center">Status</th>
+          <RoleGuard allowedRoles={['admin']}>
+            <th className="px-8 py-5 text-right">Actions</th>
+          </RoleGuard>
+        </tr>
+      </thead>
+      <tbody className="divide-y divide-white/10">
+        {loading ? (
+          <tr>
+            <td colSpan={4} className="px-8 py-20 text-center text-gray-500 font-bold">
+              Loading educator data...
+            </td>
+          </tr>
+        ) : filteredTeachers.length > 0 ? (
+          filteredTeachers.map((teacher, idx) => (
+            <tr key={teacher.id || idx} className="hover:bg-white/5 transition-colors">
+              <td className="px-6 md:px-8 py-6">
+                <div className="flex items-center gap-4">
+                  <div className="h-10 w-10 rounded-full bg-purple-500/20 text-purple-400 border border-purple-500/30 flex items-center justify-center font-black">
+                    {teacher.full_name ? teacher.full_name.charAt(0).toUpperCase() : 'T'}
+                  </div>
+                  <span className="font-bold text-slate-50 text-base">{teacher.full_name}</span>
+                </div>
+              </td>
+              <td className="px-6 md:px-8 py-6 text-slate-300 font-medium">
+                {teacher.email}
+              </td>
+              <td className="px-8 py-6 text-center">
+                <span className="px-3 py-1 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-full text-xs font-black uppercase tracking-widest">
+                  Active
+                </span>
+              </td>
+              <RoleGuard allowedRoles={['admin']}>
+                <td className="px-8 py-6 text-right">
+                  <div className="flex items-center justify-end gap-2">
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={() => handleEdit(teacher)}
+                      className="p-2 bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 hover:bg-indigo-500/20 hover:border-indigo-500/30 rounded-lg transition-all"
+                      title="Edit Teacher Account"
+                    >
+                      <Edit2 size={16} />
+                    </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={() => handleDelete(teacher)}
+                      className="p-2 bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 hover:border-red-500/30 rounded-lg transition-all"
+                      title="Delete Teacher Account"
+                    >
+                      <Trash2 size={16} />
+                    </motion.button>
+                  </div>
+                </td>
+              </RoleGuard>
+            </tr>
+          ))
+        ) : (
+          <EmptyTableState icon={Users} message="No educators registered." />
+        )}
+      </tbody>
+    </table>
+  );
+
+  const QuizzesTable = () => (
+    <table className="w-full">
+      <thead className="bg-white/5 text-gray-400 text-[11px] uppercase font-black tracking-[0.2em] sticky top-0 backdrop-blur-md z-20">
+        <tr>
+          <th className="px-6 md:px-8 py-5 text-left">Quiz Title</th>
+          <th className="px-6 md:px-8 py-5 text-left font-black">Difficulty</th>
+          <th className="px-8 py-5 text-center">Questions</th>
+          <th className="px-8 py-5 text-right">Created</th>
+        </tr>
+      </thead>
+      <tbody className="divide-y divide-white/10">
+        {loading ? (
+          <tr>
+            <td colSpan={4} className="px-8 py-20 text-center text-gray-500 font-bold">
+              Loading quiz inventory...
+            </td>
+          </tr>
+        ) : filteredQuizzes.length > 0 ? (
+          filteredQuizzes.map((quiz, idx) => {
+            const questionCount = quiz.questions?.length || quiz.Questions?.length || 0;
+            return (
+              <tr key={quiz.id || idx} className="hover:bg-white/5 transition-colors">
+                <td className="px-6 md:px-8 py-6">
+                  <div className="flex items-center gap-4">
+                    <div className="h-10 w-10 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center justify-center font-black">
+                      <FileText size={18} />
+                    </div>
+                    <span className="font-bold text-slate-50 text-base">{quiz.title || `Quiz #${quiz.id}`}</span>
+                  </div>
+                </td>
+                <td className="px-6 md:px-8 py-6 text-slate-300 font-medium">
+                  {quiz.difficulty || 'Standard'}
+                </td>
+                <td className="px-8 py-6 text-center">
+                  <span className="px-3 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-full text-xs font-black uppercase tracking-widest">
+                    {questionCount}
+                  </span>
+                </td>
+                <td className="px-8 py-6 text-right text-slate-400 font-semibold text-sm">
+                  {quiz.created_at ? new Date(quiz.created_at).toLocaleDateString() : 'N/A'}
+                </td>
+              </tr>
+            );
+          })
+        ) : (
+          <EmptyTableState icon={FileText} message="No quizzes generated." />
+        )}
+      </tbody>
+    </table>
+  );
+
   return (
-    <div className="h-screen w-full flex flex-col overflow-hidden bg-slate-950 text-slate-50">
-      <motion.div 
+    <div className="w-full text-slate-50">
+      <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex-1 overflow-y-auto p-4 md:p-6 space-y-10 relative z-10 scrollbar-thin"
+        className="space-y-10 relative z-10"
       >
       {/* Hero Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div id="admin-overview" className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 scroll-mt-28">
         <div>
-          <h1 className="text-4xl font-black text-slate-50 tracking-tight flex items-center gap-3 bg-gradient-to-r from-white via-slate-100 to-indigo-200 bg-clip-text text-transparent">
-            <ShieldCheck className="text-indigo-400" size={38} />
-            Command Center
+          <h1 className="text-3xl md:text-4xl font-black tracking-tight flex items-center gap-3 bg-gradient-to-r from-white via-slate-100 to-indigo-200 bg-clip-text text-transparent">
+            <ShieldCheck className="text-indigo-400" size={36} />
+            Admin Command Center
           </h1>
-          <p className="text-slate-300 font-medium mt-1">Superuser monitoring, teacher administrative operations, and virtual system audit logs.</p>
+          <p className="text-slate-300 font-medium mt-2 max-w-2xl">
+            Controlled operations layer for educator management, platform analytics, and audit activity.
+          </p>
         </div>
         
-        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
           <div className="relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
             <input 
               type="text" 
-              placeholder="Search teachers..."
+              placeholder={activeViewMeta.searchPlaceholder}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-11 pr-4 py-3 bg-slate-900/50 border border-white/10 rounded-full text-sm text-white focus:outline-none focus:border-indigo-500 w-full sm:w-64 transition-all"
+              className="pl-11 pr-4 py-3 bg-slate-900/60 border border-white/10 rounded-2xl text-sm text-white focus:outline-none focus:border-indigo-500 w-full sm:w-72 transition-all"
             />
           </div>
           <RoleGuard allowedRoles={['admin']}>
@@ -308,7 +600,7 @@ export default function AdminDashboard() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowModal(true)}
-              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-slate-50 rounded-full font-black shadow-[0_0_20px_rgba(99,102,241,0.4)] hover:shadow-[0_0_30px_rgba(99,102,241,0.6)] border border-white/10 transition-all whitespace-nowrap"
+              className="flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-slate-50 rounded-2xl font-black shadow-[0_0_20px_rgba(99,102,241,0.35)] hover:shadow-[0_0_30px_rgba(99,102,241,0.55)] border border-white/10 transition-all whitespace-nowrap"
             >
               <Plus size={18} />
               Register New Teacher
@@ -318,173 +610,81 @@ export default function AdminDashboard() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Total Students Card */}
-        <motion.div 
-          whileHover={{ y: -5 }}
-          className="relative bg-gradient-to-br from-indigo-900/30 via-slate-900/40 to-slate-900/40 backdrop-blur-md p-6 rounded-3xl border border-white/10 overflow-hidden group shadow-lg"
-        >
-          <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/10 rounded-full blur-2xl group-hover:bg-indigo-500/20 transition-all"></div>
-          <div className="flex items-center gap-4">
-            <div className="p-4 bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 rounded-2xl">
-              <GraduationCap size={24} />
-            </div>
-            <div>
-              <p className="text-slate-400 font-bold uppercase tracking-wider text-xs">Total Students</p>
-              <h3 className="text-3xl font-black text-white mt-1">
-                {loading ? '...' : stats.students}
-              </h3>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Total Teachers Card */}
-        <motion.div 
-          whileHover={{ y: -5 }}
-          className="relative bg-gradient-to-br from-purple-900/30 via-slate-900/40 to-slate-900/40 backdrop-blur-md p-6 rounded-3xl border border-white/10 overflow-hidden group shadow-lg"
-        >
-          <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/10 rounded-full blur-2xl group-hover:bg-purple-500/20 transition-all"></div>
-          <div className="flex items-center gap-4">
-            <div className="p-4 bg-purple-500/20 text-purple-300 border border-purple-500/30 rounded-2xl">
-              <Users size={24} />
-            </div>
-            <div>
-              <p className="text-slate-400 font-bold uppercase tracking-wider text-xs">Active Teachers</p>
-              <h3 className="text-3xl font-black text-white mt-1">
-                {loading ? '...' : stats.teachers}
-              </h3>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Total Quizzes Generated */}
-        <motion.div 
-          whileHover={{ y: -5 }}
-          className="relative bg-gradient-to-br from-emerald-900/30 via-slate-900/40 to-slate-900/40 backdrop-blur-md p-6 rounded-3xl border border-white/10 overflow-hidden group shadow-lg"
-        >
-          <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/10 rounded-full blur-2xl group-hover:bg-emerald-500/20 transition-all"></div>
-          <div className="flex items-center gap-4">
-            <div className="p-4 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-2xl">
-              <FileText size={24} />
-            </div>
-            <div>
-              <p className="text-slate-400 font-bold uppercase tracking-wider text-xs">Quizzes Generated</p>
-              <h3 className="text-3xl font-black text-white mt-1">
-                {loading ? '...' : stats.quizzes}
-              </h3>
-            </div>
-          </div>
-        </motion.div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <StatCard
+          view="students"
+          title="Total Students"
+          value={stats.students}
+          icon={GraduationCap}
+          gradient="bg-gradient-to-br from-indigo-900/25 via-slate-900/50 to-slate-900/50"
+          iconClassName="bg-indigo-500/20 text-indigo-300 border-indigo-500/30"
+        />
+        <StatCard
+          view="teachers"
+          title="Active Teachers"
+          value={stats.teachers}
+          icon={Users}
+          gradient="bg-gradient-to-br from-purple-900/25 via-slate-900/50 to-slate-900/50"
+          iconClassName="bg-purple-500/20 text-purple-300 border-purple-500/30"
+        />
+        <StatCard
+          view="quizzes"
+          title="Quizzes Generated"
+          value={stats.quizzes}
+          icon={FileText}
+          gradient="bg-gradient-to-br from-emerald-900/25 via-slate-900/50 to-slate-900/50"
+          iconClassName="bg-emerald-500/20 text-emerald-300 border-emerald-500/30"
+        />
       </div>
 
       {/* Main Grid Layout Partitioning - 2/3 for directory, 1/3 for audit log */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         
-        {/* Left Side: Educator Directory (2/3 col-span) */}
-        <div className="lg:col-span-2 space-y-6">
-          <div className="bg-slate-900/40 backdrop-blur-3xl rounded-[32px] shadow-[0_0_30px_rgba(0,0,0,0.3)] border border-white/10 overflow-hidden flex flex-col">
-            <div className="p-8 border-b border-white/10 flex items-center justify-between">
+        {/* Left Side: Dynamic Content Area (2/3 col-span) */}
+        <div id="admin-educators" className="xl:col-span-2 space-y-6 scroll-mt-28">
+          <div className="bg-slate-900/45 backdrop-blur-3xl rounded-[28px] shadow-[0_0_30px_rgba(0,0,0,0.28)] border border-white/10 overflow-hidden flex flex-col">
+            <div className="p-6 md:p-7 border-b border-white/10 flex items-center justify-between">
               <h3 className="text-2xl font-black text-slate-50 tracking-tight flex items-center gap-3">
-                <Users className="text-indigo-400" />
-                Educator Directory
+                <activeViewMeta.icon className={activeViewMeta.accent} />
+                {activeViewMeta.title}
               </h3>
               <span className="px-4 py-1.5 bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 rounded-full text-xs font-bold uppercase tracking-wider">
-                Platform: {teachers.length}
+                {activeViewMeta.label}: {activeViewMeta.count}
               </span>
             </div>
             
-            {/* Scrollable container for directory table to prevent pushing content offscreen */}
-            <div className="overflow-y-auto overflow-x-auto max-h-[500px] scrollbar-thin">
-              <table className="w-full">
-                <thead className="bg-white/5 text-gray-400 text-[11px] uppercase font-black tracking-[0.2em] sticky top-0 backdrop-blur-md z-20">
-                  <tr>
-                    <th className="px-8 py-5 text-left">Teacher Name</th>
-                    <th className="px-8 py-5 text-left font-black">Email Address</th>
-                    <th className="px-8 py-5 text-center">Status</th>
-                    <RoleGuard allowedRoles={['admin']}>
-                      <th className="px-8 py-5 text-right">Actions</th>
-                    </RoleGuard>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/10">
-                  {loading ? (
-                    <tr>
-                      <td colSpan={4} className="px-8 py-20 text-center text-gray-500 font-bold">
-                        Loading educator data...
-                      </td>
-                    </tr>
-                  ) : filteredTeachers.length > 0 ? (
-                    filteredTeachers.map((teacher, idx) => (
-                      <tr key={teacher.id || idx} className="hover:bg-white/5 transition-colors">
-                        <td className="px-8 py-6">
-                          <div className="flex items-center gap-4">
-                            <div className="h-10 w-10 rounded-full bg-purple-500/20 text-purple-400 border border-purple-500/30 flex items-center justify-center font-black">
-                              {teacher.full_name ? teacher.full_name.charAt(0).toUpperCase() : 'T'}
-                            </div>
-                            <span className="font-bold text-slate-50 text-base">{teacher.full_name}</span>
-                          </div>
-                        </td>
-                        <td className="px-8 py-6 text-slate-300 font-medium">
-                          {teacher.email}
-                        </td>
-                        <td className="px-8 py-6 text-center">
-                          <span className="px-3 py-1 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-full text-xs font-black uppercase tracking-widest">
-                            Active
-                          </span>
-                        </td>
-                        <RoleGuard allowedRoles={['admin']}>
-                          <td className="px-8 py-6 text-right">
-                            <div className="flex items-center justify-end gap-2">
-                              <motion.button
-                                whileHover={{ scale: 1.1 }}
-                                whileTap={{ scale: 0.9 }}
-                                onClick={() => handleEdit(teacher)}
-                                className="p-2 bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 hover:bg-indigo-500/20 hover:border-indigo-500/30 rounded-lg transition-all"
-                                title="Edit Teacher Account"
-                              >
-                                <Edit2 size={16} />
-                              </motion.button>
-                              <motion.button
-                                whileHover={{ scale: 1.1 }}
-                                whileTap={{ scale: 0.9 }}
-                                onClick={() => handleDelete(teacher)}
-                                className="p-2 bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 hover:border-red-500/30 rounded-lg transition-all"
-                                title="Delete Teacher Account"
-                              >
-                                <Trash2 size={16} />
-                              </motion.button>
-                            </div>
-                          </td>
-                        </RoleGuard>
-                      </tr>
-                    ))
+            {/* Scrollable container for dynamic tables to prevent pushing content offscreen */}
+            <div className="overflow-y-auto overflow-x-auto max-h-[560px] scrollbar-thin">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeView}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.18, ease: 'easeOut' }}
+                >
+                  {activeView === 'students' ? (
+                    <StudentTable />
+                  ) : activeView === 'quizzes' ? (
+                    <QuizzesTable />
                   ) : (
-                    <tr>
-                      <td colSpan={4} className="px-8 py-20 text-center">
-                        <div className="flex flex-col items-center gap-4">
-                          <div className="h-16 w-16 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center">
-                            <Users size={32} className="text-slate-500" />
-                          </div>
-                          <p className="text-slate-400 font-bold text-lg">No educators registered.</p>
-                        </div>
-                      </td>
-                    </tr>
+                    <TeacherTable />
                   )}
-                </tbody>
-              </table>
+                </motion.div>
+              </AnimatePresence>
             </div>
           </div>
         </div>
 
         {/* Right Side: Virtual Audit Logs (1/3 col-span) */}
-        <div className="lg:col-span-1 space-y-6">
-          <div className="bg-slate-900/40 backdrop-blur-3xl rounded-[32px] border border-white/10 overflow-hidden shadow-lg p-6 flex flex-col h-full">
+        <div id="admin-audit" className="xl:col-span-1 space-y-6 scroll-mt-28">
+          <div className="bg-slate-900/45 backdrop-blur-3xl rounded-[28px] border border-white/10 overflow-hidden shadow-lg p-6 flex flex-col h-full">
             <div className="flex items-center gap-3 border-b border-white/10 pb-4 mb-6">
               <Activity className="text-indigo-400" size={22} />
-              <h3 className="text-xl font-black text-white tracking-tight">System Audit Stream</h3>
+              <h3 className="text-xl font-black text-white tracking-tight">Audit Stream</h3>
             </div>
 
-            <div className="flex-1 overflow-y-auto space-y-4 max-h-[500px] pr-2 scrollbar-thin">
+            <div className="flex-1 overflow-y-auto space-y-4 max-h-[560px] pr-2 scrollbar-thin">
               {loading ? (
                 <div className="text-center py-20 text-slate-500 font-medium">
                   Loading stream...

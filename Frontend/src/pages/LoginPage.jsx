@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import useAuthStore from '../store/useAuthStore';
+import useAuth from '../hooks/useAuth';
 import PublicNavbar from '../components/PublicNavbar';
 
 export default function LoginPage() {
@@ -12,40 +12,37 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   
-  const login = useAuthStore((state) => state.login);
-  const token = useAuthStore((state) => state.token);
-  const user = useAuthStore((state) => state.user);
+  const { login, token, user, resolveDashboardPath } = useAuth();
   const navigate = useNavigate();
 
   React.useEffect(() => {
     if (token && user) {
-      if (user.role?.toLowerCase() === 'admin' || user.Role?.toLowerCase() === 'admin') {
-        navigate('/admin-dashboard', { replace: true });
-      } else {
-        navigate('/dashboard', { replace: true });
-      }
+      navigate(resolveDashboardPath(user), { replace: true });
     }
-  }, [token, user, navigate]);
+  }, [token, user, resolveDashboardPath, navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    const loadingToast = toast.loading("Verifying Account...");
+    if (loading) return;
 
-    const result = await login(email, password);
-    
-    if (result.success) {
-      toast.success("Welcome back", { id: loadingToast });
-      const user = useAuthStore.getState().user;
-      setTimeout(() => {
-        if (user && (user.role?.toLowerCase() === 'admin' || user.Role?.toLowerCase() === 'admin')) {
-          navigate('/admin-dashboard');
-        } else {
-          navigate('/dashboard');
-        }
-      }, 800);
-    } else {
-      toast.error(result.message, { id: loadingToast });
+    setLoading(true);
+    const loadingToast = toast.loading('Verifying account...');
+
+    try {
+      const result = await login(email, password);
+
+      if (result.success) {
+        toast.success('Welcome back', { id: loadingToast });
+        const path = result.redirectPath || resolveDashboardPath(result.user);
+        navigate(path, { replace: true });
+        return;
+      }
+
+      toast.error(result.message || 'Login failed', { id: loadingToast });
+    } catch (err) {
+      console.error('Login handler error:', err);
+      toast.error('Something went wrong. Please try again.', { id: loadingToast });
+    } finally {
       setLoading(false);
     }
   };
@@ -59,20 +56,6 @@ export default function LoginPage() {
         <div className="absolute top-[20%] left-[10%] w-[40%] h-[40%] bg-indigo-500/10 rounded-full blur-[140px]"></div>
         <div className="absolute bottom-[10%] right-[5%] w-[30%] h-[30%] bg-purple-600/10 rounded-full blur-[120px]"></div>
       </div>
-
-      <AnimatePresence>
-        {loading && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[200] bg-[#0a0f1e]/80 backdrop-blur-xl flex flex-col items-center justify-center"
-          >
-            <Loader2 size={64} className="text-[#F8C2A0] animate-spin mb-8" />
-            <p className="text-white font-black uppercase tracking-[0.5em] text-xs">Authenticating Profile</p>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       <motion.div 
         initial={{ opacity: 0, scale: 1.05 }}
@@ -139,15 +122,18 @@ export default function LoginPage() {
             <motion.button 
               type="submit"
               disabled={loading}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              animate={{ 
-                boxShadow: ["0px 0px 0px rgba(99,102,241,0)", "0px 0px 20px rgba(99,102,241,0.5)", "0px 0px 0px rgba(99,102,241,0)"]
-              }}
-              transition={{ boxShadow: { duration: 2, repeat: Infinity, ease: "easeInOut" } }}
-              className="w-full py-4.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-slate-50 font-black text-xl rounded-full shadow-xl shadow-indigo-500/30 hover:shadow-indigo-500/50 transition-all mt-4 flex items-center justify-center gap-3 disabled:opacity-50 border border-white/10"
+              whileHover={loading ? {} : { scale: 1.05 }}
+              whileTap={loading ? {} : { scale: 0.95 }}
+              className="w-full py-4.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-slate-50 font-black text-xl rounded-full shadow-xl shadow-indigo-500/30 hover:shadow-indigo-500/50 transition-all mt-4 flex items-center justify-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed border border-white/10"
             >
-              <span>Sign In</span>
+              {loading ? (
+                <>
+                  <Loader2 size={22} className="animate-spin" />
+                  <span>Signing in...</span>
+                </>
+              ) : (
+                <span>Sign In</span>
+              )}
             </motion.button>
           </form>
 

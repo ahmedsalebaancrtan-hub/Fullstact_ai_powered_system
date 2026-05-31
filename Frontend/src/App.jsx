@@ -53,6 +53,8 @@ export default function App() {
             }
           >
             <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/teacher-dashboard" element={<DashboardPage />} />
+            <Route path="/student-dashboard" element={<DashboardPage />} />
             <Route path="/upload" element={<UploadPage />} />
             <Route path="/history" element={<HistoryPage />} />
             <Route path="/quiz-view/:id" element={<QuizViewPage />} />

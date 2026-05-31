@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { Outlet, Navigate, useLocation } from 'react-router-dom';
 import { Menu, User } from 'lucide-react';
 import useAuthStore from '../store/useAuthStore';
@@ -6,8 +6,26 @@ import Sidebar from '../components/Sidebar';
 
 export default function DashboardLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 1024);
-  const { user, logout } = useAuthStore();
+  const { token, user, logout, fetchProfile } = useAuthStore();
   const location = useLocation();
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+
+  const displayName = useMemo(() => {
+    return user?.full_name || user?.FullName || user?.name || 'Researcher';
+  }, [user]);
+
+  const displayRole = useMemo(() => {
+    return (user?.role || user?.Role || 'user').toString();
+  }, [user]);
+
+  const displayEmail = useMemo(() => {
+    return user?.email || user?.Email || '';
+  }, [user]);
+
+  useEffect(() => {
+    if (!token || user) return;
+    fetchProfile();
+  }, [token, user, fetchProfile]);
 
   // ── RBAC: derive role once ─────────────────────────────────────────────────
   const role = (user?.role || user?.Role || '').toLowerCase();
@@ -54,7 +72,7 @@ export default function DashboardLayout() {
           ${isSidebarOpen ? 'md:ml-[290px]' : 'md:ml-28'}`}
       >
         {/* Header */}
-        <header className="h-20 bg-transparent border-b border-white/5 flex items-center justify-between px-6 md:px-10 shrink-0 z-[50]">
+        <header className="h-20 bg-transparent border-b border-white/5 flex items-center justify-between px-6 md:px-10 shrink-0 z-[50] relative">
           <div className="flex items-center gap-5">
             <button 
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -75,16 +93,52 @@ export default function DashboardLayout() {
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-3 pl-6 border-l border-white/10">
               <div className="text-right hidden sm:block">
-                <p className="text-sm font-black text-slate-50">{user?.FullName || 'Researcher'}</p>
+                <p className="text-sm font-black text-slate-50">{displayName}</p>
                 <p className="text-[10px] text-indigo-300 font-bold uppercase tracking-widest bg-indigo-500/20 border border-indigo-500/30 px-2 py-0.5 rounded-md inline-block mt-0.5">
-                  {user?.Role || 'Academic'}
+                  {displayRole}
                 </p>
               </div>
-              <div className="h-11 w-11 rounded-2xl bg-slate-900/40 backdrop-blur-xl border border-white/10 flex items-center justify-center text-slate-50 shadow-[0_0_15px_rgba(255,255,255,0.1)] group">
+              <button
+                type="button"
+                onClick={() => setIsProfileOpen((v) => !v)}
+                className="h-11 w-11 rounded-2xl bg-slate-900/40 backdrop-blur-xl border border-white/10 flex items-center justify-center text-slate-50 shadow-[0_0_15px_rgba(255,255,255,0.1)] group hover:bg-white/5 transition-colors"
+                aria-label="Open profile menu"
+              >
                 <User size={22} className="text-indigo-400 group-hover:scale-110 transition-transform" />
-              </div>
+              </button>
             </div>
           </div>
+
+          {/* Profile dropdown */}
+          {isProfileOpen && (
+            <div
+              className="absolute right-6 md:right-10 top-[72px] w-[320px] rounded-3xl border border-white/10 bg-slate-950/80 backdrop-blur-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden"
+              onMouseLeave={() => setIsProfileOpen(false)}
+            >
+              <div className="p-5 border-b border-white/10">
+                <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.25em]">Profile</p>
+                <p className="mt-2 text-lg font-black text-slate-50 truncate">{displayName}</p>
+                {displayEmail ? (
+                  <p className="text-xs text-slate-400 font-semibold truncate">{displayEmail}</p>
+                ) : null}
+                <div className="mt-3 inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-indigo-500/15 text-indigo-200 border border-indigo-500/25">
+                  {displayRole}
+                </div>
+              </div>
+              <div className="p-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsProfileOpen(false);
+                    logout();
+                  }}
+                  className="w-full px-4 py-3 rounded-2xl text-left font-black uppercase tracking-widest text-[11px] text-red-300 hover:text-red-200 hover:bg-red-500/10 border border-transparent hover:border-red-500/20 transition-all"
+                >
+                  Sign out
+                </button>
+              </div>
+            </div>
+          )}
         </header>
 
         {/* Content Outlet - Internal Scrolling */}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import useAuthStore from '../store/useAuthStore';
+import useAuthStore, { STUDENT_DASHBOARD_PATH } from '../store/useAuthStore';
 
 export interface RoleGuardProps {
   children: React.ReactNode;
@@ -17,7 +17,7 @@ export default function RoleGuard({
   children,
   allowedRoles = ['admin'],
   behavior = 'hide',
-  fallbackRedirect = '/dashboard',
+  fallbackRedirect = STUDENT_DASHBOARD_PATH,
 }: RoleGuardProps) {
   const { user, token } = useAuthStore() as {
     user: { role?: string; Role?: string; full_name?: string; email?: string } | null;
@@ -33,7 +33,7 @@ export default function RoleGuard({
     return null;
   }
 
-  const role = (user?.role || user?.Role || '').toLowerCase();
+  const role = (user?.role || user?.Role || 'student').toLowerCase() || 'student';
   const isAllowed = allowedRoles.map((r) => r.toLowerCase()).includes(role);
 
   if (!isAllowed) {

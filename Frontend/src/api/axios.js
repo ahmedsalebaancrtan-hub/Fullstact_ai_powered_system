@@ -1,7 +1,23 @@
 import axios from 'axios';
 
+const resolveBaseURL = () => {
+  const configured = import.meta.env.VITE_API_URL;
+  if (configured) return configured;
+  // Dev: same-origin + Vite proxy (/api -> localhost:9090)
+  if (import.meta.env.DEV) return '';
+  return 'http://localhost:9090';
+};
+
+export const isJsonResponse = (response) => {
+  const data = response?.data;
+  if (typeof data === 'string' && data.trim().startsWith('<!')) return false;
+  if (data && typeof data === 'object') return true;
+  const contentType = response?.headers?.['content-type'] || '';
+  return contentType.includes('application/json');
+};
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:9090',
+  baseURL: resolveBaseURL(),
   headers: {
     'Content-Type': 'application/json',
   },
@@ -27,17 +43,16 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     // Auth Rejection: If the backend returns a 401, check if we should redirect
-    if (error.response && error.response.status === 401) {
+    if (error.response?.status === 401) {
+      const onAuthPage = ['/login', '/register'].includes(window.location.pathname);
       const token = localStorage.getItem('token');
-      
-      // Only redirect if token is truly missing or if the backend explicitly says it's expired/invalid
-      if (!token || error.response.data?.error?.includes('token') || error.response.data?.messege?.includes('Unauthorized')) {
-        console.warn('Unauthorized! Redirecting to login...');
+
+      // Do not wipe session during login/profile hydration on auth pages
+      if (!onAuthPage && token) {
+        console.warn('Session expired. Redirecting to login...');
         localStorage.removeItem('token');
-        // Prevent infinite loops if already on login page
-        if (window.location.pathname !== '/login') {
-          window.location.href = '/login';
-        }
+        localStorage.removeItem('user');
+        window.location.href = '/login';
       }
     }
     

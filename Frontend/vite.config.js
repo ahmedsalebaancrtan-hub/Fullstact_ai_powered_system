@@ -10,6 +10,17 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:9090',
         changeOrigin: true,
+        secure: false,
+      },
+    },
+  },
+  preview: {
+    port: 3000,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:9090',
+        changeOrigin: true,
+        secure: false,
       },
     },
   },
