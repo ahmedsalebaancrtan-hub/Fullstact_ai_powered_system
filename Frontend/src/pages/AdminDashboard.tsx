@@ -1,24 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Users, 
-  Plus, 
-  X,
-  Mail,
-  User,
-  Lock,
-  Search,
-  ShieldCheck,
-  GraduationCap,
-  FileText,
-  Activity,
-  Trash2,
-  Edit2,
-  Calendar
+  Users, BookOpen, Clock, Activity, 
+  Settings, LogOut, ChevronRight, ShieldCheck, Search, Trash2, Edit3, X, User, Lock, Mail, FileText, UserPlus, FileUp, Database, Loader2, Calendar, School, ChevronDown,
+  Plus, GraduationCap, Edit2
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '../api/axios';
 import RoleGuard from '../components/RoleGuard';
+import AdminSchoolClassManagement from '../components/AdminSchoolClassManagement';
 
 interface Teacher {
   id: number;
@@ -84,11 +74,14 @@ export default function AdminDashboard() {
   // Recent system activity logs state
   const [recentActivities, setRecentActivities] = useState<ActivityLog[]>([]);
 
+  const [schools, setSchools] = useState<any[]>([]);
+
   // Modal form states for registering teacher
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    password: ''
+    password: '',
+    school_id: ''
   });
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
@@ -106,10 +99,15 @@ export default function AdminDashboard() {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      const [teachersRes, overviewRes] = await Promise.all([
+      const [teachersRes, overviewRes, schoolsRes] = await Promise.all([
         api.get('/api/admin/teachers'),
-        api.get('/api/quiz/system-overview')
+        api.get('/api/quiz/system-overview'),
+        api.get('/api/schools')
       ]);
+
+      if (schoolsRes.data.is_success) {
+        setSchools(schoolsRes.data.data || []);
+      }
 
       if (teachersRes.data.is_success) {
         setTeachers(teachersRes.data.data || []);
@@ -195,8 +193,8 @@ export default function AdminDashboard() {
   // REGISTER TEACHER
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name || !formData.email || !formData.password) {
-      toast.error('Please fill all fields');
+    if (!formData.name || !formData.email || !formData.password || !formData.school_id) {
+      toast.error('Please fill all fields, including school selection.');
       return;
     }
     
@@ -207,6 +205,7 @@ export default function AdminDashboard() {
       name: formData.name,
       email: formData.email,
       password: formData.password,
+      school_id: Number(formData.school_id),
     };
 
     try {
@@ -214,7 +213,7 @@ export default function AdminDashboard() {
       if (response.data.is_success) {
         toast.success('Teacher registered successfully!', { id: loadingToast });
         setShowModal(false);
-        setFormData({ name: '', email: '', password: '' });
+        setFormData({ name: '', email: '', password: '', school_id: '' });
         fetchDashboardData();
       } else {
         toast.error(response.data.message || 'Registration failed', { id: loadingToast });
@@ -637,6 +636,8 @@ export default function AdminDashboard() {
         />
       </div>
 
+      <AdminSchoolClassManagement />
+
       {/* Main Grid Layout Partitioning - 2/3 for directory, 1/3 for audit log */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         
@@ -810,6 +811,25 @@ export default function AdminDashboard() {
                         required
                         minLength={8}
                       />
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest pl-1">Assign to School (Tenant)</label>
+                    <div className="relative group">
+                      <School className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+                      <select 
+                        value={formData.school_id}
+                        onChange={(e) => setFormData({...formData, school_id: e.target.value})}
+                        className="w-full appearance-none bg-slate-800/50 border border-white/10 rounded-2xl py-3.5 pl-12 pr-10 text-slate-50 font-medium focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all cursor-pointer"
+                        required
+                      >
+                        <option value="" disabled>Select an assigned school</option>
+                        {schools.map(s => (
+                          <option key={s.id || s.ID} value={s.id || s.ID}>{s.name || s.Name}</option>
+                        ))}
+                      </select>
+                      <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" size={16} />
                     </div>
                   </div>
                   

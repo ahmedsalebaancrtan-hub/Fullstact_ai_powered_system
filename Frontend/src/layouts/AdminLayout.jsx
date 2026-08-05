@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Outlet, Navigate, useLocation } from 'react-router-dom';
 import useAuthStore from '../store/useAuthStore';
-import { ShieldCheck, User, LogOut, LayoutDashboard, Users, Activity } from 'lucide-react';
+import { ShieldCheck, User, LogOut, LayoutDashboard, Users, Activity, School } from 'lucide-react';
 
 export default function AdminLayout() {
   const { token, user, logout, fetchProfile } = useAuthStore();
@@ -42,7 +42,7 @@ export default function AdminLayout() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-50 flex flex-col">
+    <div className="h-screen bg-slate-950 text-slate-50 flex flex-col overflow-hidden">
       <header className="px-6 md:px-10 py-5 flex items-center justify-between border-b border-white/10 bg-slate-900/50 backdrop-blur-md sticky top-0 z-50 relative">
         <div className="flex items-center gap-3">
           <div className="bg-indigo-500/20 p-2 rounded-xl border border-indigo-500/30">
@@ -108,8 +108,8 @@ export default function AdminLayout() {
         )}
       </header>
       
-      <div className="flex-1 w-full max-w-[1600px] mx-auto px-4 md:px-8 py-6 grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6">
-        <aside className="lg:sticky lg:top-[110px] h-fit bg-slate-900/45 backdrop-blur-3xl border border-white/10 rounded-3xl p-4">
+      <div className="flex-1 min-h-0 w-full max-w-[1600px] mx-auto px-4 md:px-8 py-6 flex flex-col lg:flex-row gap-6">
+        <aside className="lg:w-[280px] shrink-0 h-fit bg-slate-900/45 backdrop-blur-3xl border border-white/10 rounded-3xl p-4">
           <p className="px-2 pt-2 pb-4 text-[10px] font-black uppercase tracking-[0.28em] text-slate-500">Admin Navigation</p>
           <div className="space-y-2">
             <button
@@ -137,6 +137,17 @@ export default function AdminLayout() {
             <button
               type="button"
               onClick={() => {
+                const el = document.getElementById('admin-schools');
+                el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl border border-transparent hover:border-indigo-500/20 hover:bg-white/5 text-slate-200 transition-all"
+            >
+              <School size={18} className="text-indigo-400" />
+              <span className="font-black uppercase tracking-widest text-[11px]">Schools</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
                 const el = document.getElementById('admin-audit');
                 el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
               }}
@@ -148,7 +159,7 @@ export default function AdminLayout() {
           </div>
         </aside>
 
-        <main className="min-w-0 overflow-y-auto">
+        <main className="flex-1 min-w-0 min-h-0 overflow-y-auto pb-16 pr-2">
           <Outlet />
         </main>
       </div>

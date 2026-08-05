@@ -9,6 +9,7 @@ const LoginPage = lazy(() => import('./pages/LoginPage'));
 const RegisterPage = lazy(() => import('./pages/RegisterPage'));
 const DashboardPage = lazy(() => import('./pages/DashboardPage'));
 const UploadPage = lazy(() => import('./pages/UploadPage'));
+const ExamEditorPage = lazy(() => import('./pages/ExamEditorPage'));
 const HistoryPage = lazy(() => import('./pages/HistoryPage'));
 const QuizViewPage = lazy(() => import('./pages/QuizViewPage'));
 const ActiveQuizPage = lazy(() => import('./pages/ActiveQuizPage'));
@@ -56,6 +57,7 @@ export default function App() {
             <Route path="/teacher-dashboard" element={<DashboardPage />} />
             <Route path="/student-dashboard" element={<DashboardPage />} />
             <Route path="/upload" element={<UploadPage />} />
+            <Route path="/exam-editor/:id" element={<ExamEditorPage />} />
             <Route path="/history" element={<HistoryPage />} />
             <Route path="/quiz-view/:id" element={<QuizViewPage />} />
             <Route path="/active-quiz/:id" element={<ActiveQuizPage />} />

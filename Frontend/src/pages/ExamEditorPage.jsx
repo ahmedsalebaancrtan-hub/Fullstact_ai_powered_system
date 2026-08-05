@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '../api/axios';
+import { publishQuiz } from '../api/quizzes';
 import useQuizStore from '../store/useQuizStore';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -90,6 +91,9 @@ export default function ExamEditorPage() {
       
       const response = await api.put(`/api/quiz/${id}`, payload);
       if (response.data.is_success) {
+        if (publish) {
+          await publishQuiz(id);
+        }
         toast.success(publish ? 'Exam published successfully!' : 'Changes saved as draft.', { id: loadingToast });
         if (publish) navigate('/dashboard');
       }

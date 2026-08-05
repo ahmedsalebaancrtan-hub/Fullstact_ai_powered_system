@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import api from '../api/axios';
+import { fetchQuiz, fetchStudentQuizzes, fetchTeacherQuizzes, publishQuiz } from '../api/quizzes';
 
 const useQuizStore = create((set) => ({
   currentQuiz: null,
@@ -9,14 +10,12 @@ const useQuizStore = create((set) => ({
   error: null,
 
   setLoading: (loading) => set({ isLoading: loading }),
-  setError: (error) => set({ error: null }), // Clear error first, then set if needed
+  setError: (error) => set({ error }),
 
   fetchQuizzes: async () => {
     set({ isLoading: true, error: null });
     try {
-      const response = await api.get('/api/quizzes');
-      // Backend returns data: { is_success: true, data: [quiz1, quiz2, ...] }
-      const quizzes = response.data.data || [];
+      const quizzes = await fetchTeacherQuizzes();
       set({ recentQuizzes: quizzes, isLoading: false });
     } catch (err) {
       const backendError = err.response?.data?.messege || err.response?.data?.error || "Failed to fetch quizzes.";
@@ -34,11 +33,10 @@ const useQuizStore = create((set) => ({
   fetchAvailableQuizzes: async () => {
     set({ isLoading: true, error: null });
     try {
-      const response = await api.get('/api/quiz/available');
-      const quizzes = response.data.data || [];
+      const quizzes = await fetchStudentQuizzes();
       set({ recentQuizzes: quizzes, isLoading: false });
     } catch (err) {
-      const backendError = err.response?.data?.message || err.response?.data?.error || "Failed to fetch available quizzes.";
+      const backendError = err.response?.data?.message || err.response?.data?.error || "Failed to fetch student quizzes.";
       set({ error: backendError, isLoading: false });
     }
   },
@@ -79,15 +77,33 @@ const useQuizStore = create((set) => ({
   fetchQuizById: async (id) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await api.get(`/api/quiz/${id}`);
-      if (response.data.is_success) {
-        set({ currentQuiz: response.data.data, isLoading: false });
-      } else {
-        throw new Error(response.data.message || "Quiz not found.");
-      }
+      const quiz = await fetchQuiz(id);
+      if (!quiz) throw new Error("Quiz not found.");
+      set({ currentQuiz: quiz, isLoading: false });
     } catch (err) {
       const backendError = err.response?.data?.message || err.response?.data?.error || "Failed to load quiz.";
       set({ error: backendError, isLoading: false });
+    }
+  },
+
+  publishQuizById: async (id) => {
+    set({ isLoading: true, error: null });
+    try {
+      await publishQuiz(id);
+      set((state) => ({
+        currentQuiz: String(state.currentQuiz?.id) === String(id)
+          ? { ...state.currentQuiz, status: 'PUBLISHED' }
+          : state.currentQuiz,
+        recentQuizzes: state.recentQuizzes.map((quiz) =>
+          String(quiz.id) === String(id) ? { ...quiz, status: 'PUBLISHED' } : quiz
+        ),
+        isLoading: false,
+      }));
+      return { success: true };
+    } catch (err) {
+      const backendError = err.response?.data?.message || err.response?.data?.error || "Failed to publish quiz.";
+      set({ error: backendError, isLoading: false });
+      return { success: false, error: backendError };
     }
   },
 

@@ -26,6 +26,7 @@ export default function DashboardPage() {
   const isTeacher = role === 'teacher';
   const isAdmin   = role === 'admin';
   const canGenerate = isTeacher || isAdmin; // only teacher / admin may create assessments
+  const studentClassId = user?.class_id ?? user?.ClassID;
   // ──────────────────────────────────────────────────────────────────────────
 
   useEffect(() => {
@@ -36,6 +37,10 @@ export default function DashboardPage() {
       fetchQuizzes();
     }
   }, [fetchQuizzes, fetchAvailableQuizzes, fetchMyResults, user]);
+
+  const classScopedQuizzes = studentClassId
+    ? recentQuizzes.filter((quiz) => String(quiz.class_id ?? quiz.ClassID) === String(studentClassId))
+    : recentQuizzes;
 
   const { totalQuizzes, totalMaterials, recentActivity } = getStats({ recentQuizzes });
 
@@ -93,7 +98,7 @@ export default function DashboardPage() {
 
       {isStudent ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-          {recentQuizzes.map((quiz) => (
+          {classScopedQuizzes.map((quiz) => (
             <motion.div
               key={quiz.id}
               whileHover={{ y: -5 }}
@@ -115,6 +120,11 @@ export default function DashboardPage() {
               </div>
               
               <h3 className="text-xl font-black text-slate-50 mb-2 relative z-10 line-clamp-2">{quiz.title}</h3>
+              {(quiz.class?.name || quiz.Class?.Name) && (
+                <p className="text-xs font-black text-indigo-200/80 uppercase tracking-widest mb-4 relative z-10">
+                  {quiz.class?.name || quiz.Class?.Name}
+                </p>
+              )}
               
               <div className="flex items-center gap-4 text-slate-400 font-medium text-sm mb-8 relative z-10">
                 <div className="flex items-center gap-1.5 text-indigo-300">
@@ -149,7 +159,7 @@ export default function DashboardPage() {
               })()}
             </motion.div>
           ))}
-          {recentQuizzes.length === 0 && (
+          {classScopedQuizzes.length === 0 && (
             <div className="col-span-full py-20 text-center">
               <div className="h-16 w-16 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <BookOpen size={32} className="text-slate-500" />

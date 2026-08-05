@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, DragEvent, ChangeEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FileText, 
@@ -14,6 +14,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import api from '../api/axios';
+import { fetchClasses } from '../api/quizzes';
 import useQuizStore from '../store/useQuizStore';
 import useAuthStore from '../store/useAuthStore';
 
@@ -31,6 +32,32 @@ export default function UploadPage() {
   const [timeLimit, setTimeLimit] = useState(30);
   const [status, setStatus] = useState('PUBLISHED');
   const [showConfigModal, setShowConfigModal] = useState(false);
+
+  const [classes, setClasses] = useState([]);
+  const [selectedClassId, setSelectedClassId] = useState('');
+  const [isClassLoading, setIsClassLoading] = useState(false);
+
+  React.useEffect(() => {
+    const loadClasses = async () => {
+      setIsClassLoading(true);
+      try {
+        const classList = await fetchClasses();
+        setClasses(classList);
+      } catch (err) {
+        console.error("Failed to fetch classes:", err);
+        toast.error("Unable to load classes for targeting.");
+      } finally {
+        setIsClassLoading(false);
+      }
+    };
+    loadClasses();
+  }, []);
+
+  const getId = (entity) => entity?.id ?? entity?.ID;
+  const getSchoolId = (entity) => entity?.school_id ?? entity?.SchoolID;
+
+  const selectedClass = classes.find((cls) => String(getId(cls)) === String(selectedClassId));
+  const selectedSchoolId = user?.school_id ?? user?.SchoolID ?? getSchoolId(selectedClass);
 
   const handleFileChange = (selectedFile) => {
     if (selectedFile && selectedFile.type === 'application/pdf') {
@@ -80,6 +107,16 @@ export default function UploadPage() {
       return;
     }
 
+    if (!selectedClassId) {
+      toast.error("Please select a target class.");
+      return;
+    }
+
+    if (!selectedSchoolId) {
+      toast.error("Unable to determine the school for this class.");
+      return;
+    }
+
     setLoading(true);
     const loadingToast = toast.loading("AI is designing your assessment...");
 
@@ -100,6 +137,8 @@ export default function UploadPage() {
       formData.append('num_questions', numQuestions.toString());
       formData.append('time_limit', timeLimit.toString());
       formData.append('status', status);
+      formData.append('school_id', selectedSchoolId.toString());
+      formData.append('class_id', selectedClassId.toString());
 
       const quizResp = await api.post('/api/quiz/generate', formData, {
         headers: {
@@ -116,7 +155,7 @@ export default function UploadPage() {
         
         navigate('/dashboard');
       } else {
-        throw new Error(quizResp.data.message || "Failed to generate quiz.");
+        throw new Error(quizResp.data.message || quizResp.data.error || "Failed to generate quiz.");
       }
     } catch (err) {
       const backendError = err.response?.data?.message || err.response?.data?.error || err.message || "AI is busy, please try again in a few seconds.";
@@ -140,16 +179,30 @@ export default function UploadPage() {
       </div>
 
       <div className="bg-[#0a0f1e] rounded-[40px] shadow-2xl border border-gray-800 overflow-hidden flex-1 flex flex-col relative">
-        {/* Background Ambience similar to Login */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <div className="absolute top-0 right-0 w-[60%] h-[60%] bg-indigo-900/10 rounded-full blur-[120px]"></div>
           <div className="absolute bottom-0 left-[-10%] w-[50%] h-[50%] bg-blue-900/10 rounded-full blur-[100px]"></div>
         </div>
 
-        {/* Scrollable Inner Container */}
         <div className="flex-1 overflow-y-auto p-6 md:p-12 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] relative z-10">
           <div className="space-y-10">
             
+            {/* Target Class Dropdown */}
+            <div className="space-y-4 w-full">
+              <label className="block text-sm font-black text-white uppercase tracking-widest px-1">Target Class</label>
+              <select 
+                value={selectedClassId}
+                onChange={(e) => setSelectedClassId(e.target.value)}
+                disabled={isClassLoading}
+                className="w-full px-8 py-6 bg-slate-900/50 border border-white/5 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500/50 transition-all text-xl text-white font-medium appearance-none"
+              >
+                <option value="" disabled>{isClassLoading ? 'Loading classes...' : 'Select a Class'}</option>
+                {classes.map(cls => (
+                  <option key={getId(cls)} value={getId(cls)}>{cls.name ?? cls.Name}</option>
+                ))}
+              </select>
+            </div>
+
             {/* Topic / Title */}
             <div className="space-y-4 w-full">
               <label className="block text-sm font-black text-white uppercase tracking-widest px-1">Assessment Topic</label>
@@ -179,7 +232,6 @@ export default function UploadPage() {
                       : 'border-white/10 bg-slate-900/50 hover:border-white/20'
                 }`}
               >
-                {/* Visual glow backdrop for modern aura glass */}
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-indigo-500/5 rounded-full blur-[80px] pointer-events-none"></div>
 
                 <input 
@@ -244,6 +296,7 @@ export default function UploadPage() {
                 {['Easy', 'Medium', 'Hard'].map((level) => (
                   <button
                     key={level}
+                    type="button"
                     onClick={() => setDifficulty(level)}
                     className={`py-6 px-6 text-lg font-bold rounded-2xl transition-all border flex items-center justify-between ${
                       difficulty === level 
@@ -312,9 +365,14 @@ export default function UploadPage() {
             {/* Submit Button */}
             <div className="pt-8 w-full">
               <button 
+                type="button"
                 onClick={() => {
                   if (!title.trim() || !file) {
                     toast.error("Please provide both a title and a study PDF.");
+                    return;
+                  }
+                  if (!selectedClassId) {
+                    toast.error("Please select a target class.");
                     return;
                   }
                   setShowConfigModal(true);
@@ -373,6 +431,7 @@ export default function UploadPage() {
                   <label className="block text-sm font-black text-gray-400 uppercase tracking-widest mb-2">Visibility</label>
                   <div className="grid grid-cols-2 gap-3">
                     <button 
+                      type="button"
                       onClick={() => setStatus('PUBLISHED')}
                       className={`py-3 px-4 rounded-xl font-bold transition-all border ${
                         status === 'PUBLISHED' 
@@ -383,6 +442,7 @@ export default function UploadPage() {
                       Publish Now
                     </button>
                     <button 
+                      type="button"
                       onClick={() => setStatus('DRAFT')}
                       className={`py-3 px-4 rounded-xl font-bold transition-all border ${
                         status === 'DRAFT' 
@@ -397,12 +457,14 @@ export default function UploadPage() {
 
                 <div className="flex gap-4 pt-4">
                   <button 
+                    type="button"
                     onClick={() => setShowConfigModal(false)}
                     className="flex-1 py-4 bg-white/5 text-gray-300 rounded-xl font-bold hover:bg-white/10 transition-colors"
                   >
                     Cancel
                   </button>
                   <button 
+                    type="button"
                     onClick={handleGenerate}
                     className="flex-1 py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-black flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(99,102,241,0.4)] transition-all"
                   >
