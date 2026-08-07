@@ -93,7 +93,7 @@ function StatCard({
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`flex items-center gap-4 p-5 rounded-2xl bg-slate-900/50 backdrop-blur border ${borderColor} ${glow}`}
+      className="flex items-center gap-4 p-5 rounded-2xl bg-slate-900/60 backdrop-blur-xl border border-slate-800/80 shadow-2xl"
     >
       <div className={`h-12 w-12 rounded-2xl ${gradient} flex items-center justify-center shrink-0`}>
         <Icon size={22} className="text-white" />
@@ -144,7 +144,7 @@ function Field({
 }
 
 const inputCls =
-  'w-full bg-slate-800/60 border border-white/10 rounded-xl py-3.5 px-4 text-slate-50 font-medium placeholder-slate-600 focus:outline-none focus:border-indigo-500/70 focus:ring-1 focus:ring-indigo-500/50 transition-all text-sm';
+  'w-full bg-slate-950/40 border border-slate-800/80 rounded-xl py-3.5 px-4 text-white font-medium placeholder-slate-600 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 transition-all text-sm';
 
 // ──── Main Component ──────────────────────────────────────────────────────────
 
@@ -378,10 +378,10 @@ export default function AdminSchoolClassManagement() {
           onSubmit={handleCreateSchool}
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-[28px] p-7 shadow-[0_0_40px_rgba(0,0,0,0.3)] space-y-5 flex flex-col"
+          className="bg-slate-900/60 backdrop-blur-xl border border-slate-800/80 rounded-2xl p-7 shadow-2xl space-y-5 flex flex-col"
         >
           <div className="flex items-center gap-4">
-            <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-indigo-500/30 to-purple-600/30 text-indigo-300 border border-indigo-500/30 flex items-center justify-center shrink-0">
+            <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-indigo-500/10 to-purple-600/10 text-indigo-400 border border-indigo-500/20 flex items-center justify-center shrink-0">
               <Building2 size={24} />
             </div>
             <div>
@@ -435,7 +435,7 @@ export default function AdminSchoolClassManagement() {
           <button
             type="submit"
             disabled={isCreatingSchool}
-            className="mt-auto w-full py-4 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-2xl font-black shadow-[0_0_20px_rgba(99,102,241,0.35)] hover:shadow-[0_0_30px_rgba(99,102,241,0.55)] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+            className="mt-auto w-full py-3.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white rounded-xl font-black shadow-lg shadow-indigo-600/20 hover:shadow-indigo-600/30 transition-all disabled:opacity-50 flex items-center justify-center gap-2 border border-white/5"
           >
             {isCreatingSchool ? (
               <><Loader2 size={18} className="animate-spin" /> Creating...</>
@@ -451,10 +451,10 @@ export default function AdminSchoolClassManagement() {
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.07 }}
-          className="bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-[28px] p-7 shadow-[0_0_40px_rgba(0,0,0,0.3)] space-y-5 flex flex-col"
+          className="bg-slate-900/60 backdrop-blur-xl border border-slate-800/80 rounded-2xl p-7 shadow-2xl space-y-5 flex flex-col"
         >
           <div className="flex items-center gap-4">
-            <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-emerald-500/30 to-teal-600/30 text-emerald-300 border border-emerald-500/30 flex items-center justify-center shrink-0">
+            <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-emerald-500/10 to-teal-600/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center shrink-0">
               <GraduationCap size={24} />
             </div>
             <div>
@@ -470,9 +470,9 @@ export default function AdminSchoolClassManagement() {
                 onChange={(e) => setSelectedSchoolId(e.target.value)}
                 className={`${inputCls} appearance-none pr-10`}
               >
-                <option value="">— Select a school —</option>
+                <option value="" className="bg-slate-950 text-white">— Select a school —</option>
                 {Array.from(schoolsById.values()).map((school) => (
-                  <option key={getId(school)} value={getId(school)}>
+                  <option key={getId(school)} value={getId(school)} className="bg-slate-950 text-white">
                     {getName(school)}{getCode(school) ? ` (${getCode(school)})` : ''}
                   </option>
                 ))}
@@ -503,7 +503,7 @@ export default function AdminSchoolClassManagement() {
                   exit={{ opacity: 0, height: 0 }}
                   className="overflow-hidden"
                 >
-                  <div className="flex items-center gap-3 p-4 rounded-xl bg-emerald-500/8 border border-emerald-500/20">
+                  <div className="flex items-center gap-3 p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/20">
                     <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
                     <div className="text-xs text-slate-300 font-medium">
                       <span className="font-black text-emerald-300">{getName(school)}</span>
@@ -532,19 +532,19 @@ export default function AdminSchoolClassManagement() {
       </div>
 
       {/* ── School Class Map Table ──────────────────────────────────────── */}
-      <div className="bg-slate-900/50 backdrop-blur-xl rounded-[28px] border border-white/10 overflow-hidden shadow-[0_0_40px_rgba(0,0,0,0.3)]">
+      <div className="bg-slate-900/60 backdrop-blur-xl rounded-2xl border border-slate-800/80 overflow-hidden shadow-2xl">
         
         {/* Table Header */}
-        <div className="p-6 md:p-8 border-b border-white/10 flex items-center justify-between gap-4 flex-wrap">
+        <div className="p-6 md:p-8 border-b border-slate-800/80 flex items-center justify-between gap-4 flex-wrap">
           <h3 className="text-xl md:text-2xl font-black text-slate-50 tracking-tight flex items-center gap-3">
             <Layers3 className="text-indigo-400" size={24} />
             School Directory
           </h3>
           <div className="flex items-center gap-3">
-            <span className="px-4 py-1.5 bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 rounded-full text-xs font-bold uppercase tracking-wider">
+            <span className="px-4 py-1.5 bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 rounded-full text-xs font-bold uppercase tracking-wider">
               {oversightRows.length} {oversightRows.length === 1 ? 'school' : 'schools'}
             </span>
-            <span className="px-4 py-1.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-full text-xs font-bold uppercase tracking-wider">
+            <span className="px-4 py-1.5 bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 rounded-full text-xs font-bold uppercase tracking-wider">
               {classes.length} {classes.length === 1 ? 'class' : 'classes'}
             </span>
           </div>

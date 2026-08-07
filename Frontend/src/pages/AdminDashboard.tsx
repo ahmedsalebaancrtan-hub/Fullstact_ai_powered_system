@@ -363,8 +363,8 @@ export default function AdminDashboard() {
         whileTap={{ scale: 0.98 }}
         onClick={() => setActiveView(view)}
         aria-pressed={isActive}
-        className={`relative text-left ${gradient} backdrop-blur-md p-6 rounded-3xl border overflow-hidden group shadow-lg transition-all focus:outline-none focus:ring-2 focus:ring-indigo-400/60 ${
-          isActive ? 'border-indigo-300/50 shadow-[0_0_28px_rgba(99,102,241,0.22)]' : 'border-white/10'
+        className={`relative text-left bg-slate-900/60 backdrop-blur-xl p-6 rounded-2xl border overflow-hidden group shadow-2xl transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500/50 ${
+          isActive ? 'border-indigo-500/50 shadow-[0_0_28px_rgba(99,102,241,0.15)]' : 'border-slate-800/80'
         }`}
       >
         <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full blur-2xl group-hover:bg-white/15 transition-all"></div>
@@ -398,7 +398,7 @@ export default function AdminDashboard() {
 
   const StudentTable = () => (
     <table className="w-full">
-      <thead className="bg-white/5 text-gray-400 text-[11px] uppercase font-black tracking-[0.2em] sticky top-0 backdrop-blur-md z-20">
+      <thead className="bg-slate-950/40 border-b border-slate-800/60 text-slate-400 text-[11px] uppercase font-black tracking-[0.2em] sticky top-0 backdrop-blur-md z-20">
         <tr>
           <th className="px-6 md:px-8 py-5 text-left">Student Name</th>
           <th className="px-6 md:px-8 py-5 text-left font-black">Email Address</th>
@@ -406,7 +406,7 @@ export default function AdminDashboard() {
           <th className="px-8 py-5 text-right">Joined</th>
         </tr>
       </thead>
-      <tbody className="divide-y divide-white/10">
+      <tbody className="divide-y divide-slate-800/60">
         {loading ? (
           <tr>
             <td colSpan={4} className="px-8 py-20 text-center text-gray-500 font-bold">
@@ -415,7 +415,7 @@ export default function AdminDashboard() {
           </tr>
         ) : filteredStudents.length > 0 ? (
           filteredStudents.map((student, idx) => (
-            <tr key={student.id || idx} className="hover:bg-white/5 transition-colors">
+            <tr key={student.id || idx} className="hover:bg-slate-900/30 transition-colors">
               <td className="px-6 md:px-8 py-6">
                 <div className="flex items-center gap-4">
                   <div className="h-10 w-10 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 flex items-center justify-center font-black">
@@ -444,7 +444,7 @@ export default function AdminDashboard() {
 
   const TeacherTable = () => (
     <table className="w-full">
-      <thead className="bg-white/5 text-gray-400 text-[11px] uppercase font-black tracking-[0.2em] sticky top-0 backdrop-blur-md z-20">
+      <thead className="bg-slate-950/40 border-b border-slate-800/60 text-slate-400 text-[11px] uppercase font-black tracking-[0.2em] sticky top-0 backdrop-blur-md z-20">
         <tr>
           <th className="px-6 md:px-8 py-5 text-left">Teacher Name</th>
           <th className="px-6 md:px-8 py-5 text-left font-black">Email Address</th>
@@ -454,7 +454,7 @@ export default function AdminDashboard() {
           </RoleGuard>
         </tr>
       </thead>
-      <tbody className="divide-y divide-white/10">
+      <tbody className="divide-y divide-slate-800/60">
         {loading ? (
           <tr>
             <td colSpan={4} className="px-8 py-20 text-center text-gray-500 font-bold">
@@ -463,7 +463,7 @@ export default function AdminDashboard() {
           </tr>
         ) : filteredTeachers.length > 0 ? (
           filteredTeachers.map((teacher, idx) => (
-            <tr key={teacher.id || idx} className="hover:bg-white/5 transition-colors">
+            <tr key={teacher.id || idx} className="hover:bg-slate-900/30 transition-colors">
               <td className="px-6 md:px-8 py-6">
                 <div className="flex items-center gap-4">
                   <div className="h-10 w-10 rounded-full bg-purple-500/20 text-purple-400 border border-purple-500/30 flex items-center justify-center font-black">
@@ -515,7 +515,7 @@ export default function AdminDashboard() {
 
   const QuizzesTable = () => (
     <table className="w-full">
-      <thead className="bg-white/5 text-gray-400 text-[11px] uppercase font-black tracking-[0.2em] sticky top-0 backdrop-blur-md z-20">
+      <thead className="bg-slate-950/40 border-b border-slate-800/60 text-slate-400 text-[11px] uppercase font-black tracking-[0.2em] sticky top-0 backdrop-blur-md z-20">
         <tr>
           <th className="px-6 md:px-8 py-5 text-left">Quiz Title</th>
           <th className="px-6 md:px-8 py-5 text-left font-black">Difficulty</th>
@@ -523,7 +523,7 @@ export default function AdminDashboard() {
           <th className="px-8 py-5 text-right">Created</th>
         </tr>
       </thead>
-      <tbody className="divide-y divide-white/10">
+      <tbody className="divide-y divide-slate-800/60">
         {loading ? (
           <tr>
             <td colSpan={4} className="px-8 py-20 text-center text-gray-500 font-bold">
@@ -534,7 +534,7 @@ export default function AdminDashboard() {
           filteredQuizzes.map((quiz, idx) => {
             const questionCount = quiz.questions?.length || quiz.Questions?.length || 0;
             return (
-              <tr key={quiz.id || idx} className="hover:bg-white/5 transition-colors">
+              <tr key={quiz.id || idx} className="hover:bg-slate-900/30 transition-colors">
                 <td className="px-6 md:px-8 py-6">
                   <div className="flex items-center gap-4">
                     <div className="h-10 w-10 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center justify-center font-black">
@@ -599,7 +599,7 @@ export default function AdminDashboard() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowModal(true)}
-              className="flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-slate-50 rounded-2xl font-black shadow-[0_0_20px_rgba(99,102,241,0.35)] hover:shadow-[0_0_30px_rgba(99,102,241,0.55)] border border-white/10 transition-all whitespace-nowrap"
+              className="flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white rounded-2xl font-black shadow-lg shadow-indigo-600/20 border border-white/5 transition-all whitespace-nowrap"
             >
               <Plus size={18} />
               Register New Teacher
@@ -643,13 +643,13 @@ export default function AdminDashboard() {
         
         {/* Left Side: Dynamic Content Area (2/3 col-span) */}
         <div id="admin-educators" className="xl:col-span-2 space-y-6 scroll-mt-28">
-          <div className="bg-slate-900/45 backdrop-blur-3xl rounded-[28px] shadow-[0_0_30px_rgba(0,0,0,0.28)] border border-white/10 overflow-hidden flex flex-col">
-            <div className="p-6 md:p-7 border-b border-white/10 flex items-center justify-between">
+          <div className="bg-slate-900/60 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-800/80 overflow-hidden flex flex-col">
+            <div className="p-6 md:p-7 border-b border-slate-800/80 flex items-center justify-between">
               <h3 className="text-2xl font-black text-slate-50 tracking-tight flex items-center gap-3">
                 <activeViewMeta.icon className={activeViewMeta.accent} />
                 {activeViewMeta.title}
               </h3>
-              <span className="px-4 py-1.5 bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 rounded-full text-xs font-bold uppercase tracking-wider">
+              <span className="px-4 py-1.5 bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 rounded-full text-xs font-bold uppercase tracking-wider">
                 {activeViewMeta.label}: {activeViewMeta.count}
               </span>
             </div>
@@ -679,8 +679,8 @@ export default function AdminDashboard() {
 
         {/* Right Side: Virtual Audit Logs (1/3 col-span) */}
         <div id="admin-audit" className="xl:col-span-1 space-y-6 scroll-mt-28">
-          <div className="bg-slate-900/45 backdrop-blur-3xl rounded-[28px] border border-white/10 overflow-hidden shadow-lg p-6 flex flex-col h-full">
-            <div className="flex items-center gap-3 border-b border-white/10 pb-4 mb-6">
+          <div className="bg-slate-900/60 backdrop-blur-xl rounded-2xl border border-slate-800/80 overflow-hidden shadow-2xl p-6 flex flex-col h-full">
+            <div className="flex items-center gap-3 border-b border-slate-800/80 pb-4 mb-6">
               <Activity className="text-indigo-400" size={22} />
               <h3 className="text-xl font-black text-white tracking-tight">Audit Stream</h3>
             </div>
@@ -694,19 +694,19 @@ export default function AdminDashboard() {
                 recentActivities.map((act) => (
                   <div 
                     key={act.id} 
-                    className="p-4 bg-white/5 border border-white/5 rounded-2xl flex flex-col gap-1.5 transition-all hover:bg-white/10 relative overflow-hidden"
+                    className="p-4 bg-slate-950/40 border border-slate-800/60 rounded-2xl flex flex-col gap-1.5 transition-all hover:bg-slate-900/50 relative overflow-hidden"
                   >
                     {/* Activity Type Left Highlight Border */}
                     <div className={`absolute top-0 bottom-0 left-0 w-1 ${
                       act.type === 'user' ? 'bg-purple-500' :
                       act.type === 'quiz' ? 'bg-indigo-500' : 'bg-emerald-500'
                     }`}></div>
-
+ 
                     <div className="flex items-center justify-between pl-2">
                       <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full ${
-                        act.type === 'user' ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' :
-                        act.type === 'quiz' ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30' : 
-                        'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                        act.type === 'user' ? 'bg-purple-500/10 text-purple-300 border border-purple-500/20' :
+                        act.type === 'quiz' ? 'bg-indigo-500/10 text-indigo-300 border border-indigo-500/20' : 
+                        'bg-emerald-500/10 text-emerald-300 border border-emerald-500/20'
                       }`}>
                         {act.type}
                       </span>
@@ -749,7 +749,7 @@ export default function AdminDashboard() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-md bg-slate-900 border border-indigo-500/30 rounded-[32px] shadow-[0_0_50px_rgba(79,70,229,0.3)] overflow-hidden"
+              className="relative w-full max-w-md bg-slate-950/90 backdrop-blur-2xl border border-slate-800/80 rounded-2xl shadow-2xl overflow-hidden"
             >
               <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/20 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2"></div>
               
@@ -776,7 +776,7 @@ export default function AdminDashboard() {
                         type="text" 
                         value={formData.name}
                         onChange={(e) => setFormData({...formData, name: e.target.value})}
-                        className="w-full bg-slate-800/50 border border-white/10 rounded-2xl py-3.5 pl-12 pr-4 text-slate-50 font-medium placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                        className="w-full bg-slate-950/40 border border-slate-800/80 rounded-xl py-3 pl-12 pr-4 text-white font-medium placeholder-slate-600 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 transition-all text-sm"
                         placeholder="John Doe"
                         required
                       />
@@ -791,7 +791,7 @@ export default function AdminDashboard() {
                         type="email" 
                         value={formData.email}
                         onChange={(e) => setFormData({...formData, email: e.target.value})}
-                        className="w-full bg-slate-800/50 border border-white/10 rounded-2xl py-3.5 pl-12 pr-4 text-slate-50 font-medium placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                        className="w-full bg-slate-950/40 border border-slate-800/80 rounded-xl py-3 pl-12 pr-4 text-white font-medium placeholder-slate-600 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 transition-all text-sm"
                         placeholder="teacher@school.edu"
                         required
                       />
@@ -806,7 +806,7 @@ export default function AdminDashboard() {
                         type="password" 
                         value={formData.password}
                         onChange={(e) => setFormData({...formData, password: e.target.value})}
-                        className="w-full bg-slate-800/50 border border-white/10 rounded-2xl py-3.5 pl-12 pr-4 text-slate-50 font-medium placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                        className="w-full bg-slate-950/40 border border-slate-800/80 rounded-xl py-3 pl-12 pr-4 text-white font-medium placeholder-slate-600 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 transition-all text-sm"
                         placeholder="••••••••"
                         required
                         minLength={8}
@@ -821,12 +821,12 @@ export default function AdminDashboard() {
                       <select 
                         value={formData.school_id}
                         onChange={(e) => setFormData({...formData, school_id: e.target.value})}
-                        className="w-full appearance-none bg-slate-800/50 border border-white/10 rounded-2xl py-3.5 pl-12 pr-10 text-slate-50 font-medium focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all cursor-pointer"
+                        className="w-full appearance-none bg-slate-950/40 border border-slate-800/80 rounded-xl py-3.5 pl-12 pr-10 text-white font-medium focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all cursor-pointer"
                         required
                       >
-                        <option value="" disabled>Select an assigned school</option>
+                        <option value="" disabled className="bg-slate-950 text-white">Select an assigned school</option>
                         {schools.map(s => (
-                          <option key={s.id || s.ID} value={s.id || s.ID}>{s.name || s.Name}</option>
+                          <option key={s.id || s.ID} value={s.id || s.ID} className="bg-slate-950 text-white">{s.name || s.Name}</option>
                         ))}
                       </select>
                       <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" size={16} />
@@ -837,7 +837,7 @@ export default function AdminDashboard() {
                     <button 
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full py-4 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-2xl font-black text-lg shadow-[0_0_20px_rgba(99,102,241,0.4)] hover:shadow-[0_0_30px_rgba(99,102,241,0.6)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white rounded-xl font-black text-md shadow-lg shadow-indigo-600/20 hover:shadow-indigo-600/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed border border-white/5"
                     >
                       {isSubmitting ? 'Registering...' : 'Create Account'}
                     </button>
@@ -865,7 +865,7 @@ export default function AdminDashboard() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-md bg-slate-900 border border-indigo-500/30 rounded-[32px] shadow-[0_0_50px_rgba(79,70,229,0.3)] overflow-hidden"
+              className="relative w-full max-w-md bg-slate-950/90 backdrop-blur-2xl border border-slate-800/80 rounded-2xl shadow-2xl overflow-hidden"
             >
               <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/20 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2"></div>
               
@@ -892,7 +892,7 @@ export default function AdminDashboard() {
                         type="text" 
                         value={editFormData.name}
                         onChange={(e) => setEditFormData({...editFormData, name: e.target.value})}
-                        className="w-full bg-slate-800/50 border border-white/10 rounded-2xl py-3.5 pl-12 pr-4 text-slate-50 font-medium placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                        className="w-full bg-slate-950/40 border border-slate-800/80 rounded-xl py-3 pl-12 pr-4 text-white font-medium placeholder-slate-600 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 transition-all text-sm"
                         placeholder="John Doe"
                         required
                       />
@@ -907,7 +907,7 @@ export default function AdminDashboard() {
                         type="email" 
                         value={editFormData.email}
                         onChange={(e) => setEditFormData({...editFormData, email: e.target.value})}
-                        className="w-full bg-slate-800/50 border border-white/10 rounded-2xl py-3.5 pl-12 pr-4 text-slate-50 font-medium placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                        className="w-full bg-slate-950/40 border border-slate-800/80 rounded-xl py-3 pl-12 pr-4 text-white font-medium placeholder-slate-600 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 transition-all text-sm"
                         placeholder="teacher@school.edu"
                         required
                       />
@@ -922,7 +922,7 @@ export default function AdminDashboard() {
                         type="password" 
                         value={editFormData.password}
                         onChange={(e) => setEditFormData({...editFormData, password: e.target.value})}
-                        className="w-full bg-slate-800/50 border border-white/10 rounded-2xl py-3.5 pl-12 pr-4 text-slate-50 font-medium placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                        className="w-full bg-slate-950/40 border border-slate-800/80 rounded-xl py-3 pl-12 pr-4 text-white font-medium placeholder-slate-600 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 transition-all text-sm"
                         placeholder="Leave blank to keep current"
                         minLength={8}
                       />
@@ -933,7 +933,7 @@ export default function AdminDashboard() {
                     <button 
                       type="submit"
                       disabled={isEditingSubmitting}
-                      className="w-full py-4 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-2xl font-black text-lg shadow-[0_0_20px_rgba(99,102,241,0.4)] hover:shadow-[0_0_30px_rgba(99,102,241,0.6)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white rounded-xl font-black text-md shadow-lg shadow-indigo-600/20 hover:shadow-indigo-600/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed border border-white/5"
                     >
                       {isEditingSubmitting ? 'Updating...' : 'Save Profile Changes'}
                     </button>

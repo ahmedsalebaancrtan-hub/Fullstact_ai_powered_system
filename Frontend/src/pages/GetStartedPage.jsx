@@ -68,14 +68,13 @@ export default function GetStartedPage() {
       description: "Receive instant accuracy rate feedback and comprehensive pedagogical summaries after every quiz."
     }
   ];
-
   return (
-    <div className="h-screen w-full bg-gradient-to-br from-[#020617] via-[#0f172a] to-[#1e1b4b] relative overflow-hidden flex flex-col items-center justify-between py-8">
+    <div className="h-screen w-full bg-[#060608] relative overflow-hidden flex flex-col items-center justify-between py-8">
       
       {/* Ambient Light Orbs */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-[10%] left-[10%] w-[40%] h-[40%] bg-indigo-500/10 rounded-full blur-[140px] animate-pulse"></div>
-        <div className="absolute bottom-[20%] right-[5%] w-[35%] h-[35%] bg-purple-600/10 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }}></div>
+      <div className="absolute inset-0 pointer-events-none z-0">
+        <div className="absolute top-[10%] left-[10%] w-[40%] h-[40%] bg-indigo-500/5 rounded-full blur-[140px] animate-pulse"></div>
+        <div className="absolute bottom-[20%] right-[5%] w-[35%] h-[35%] bg-purple-600/5 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }}></div>
       </div>
 
       <AnimatePresence>
@@ -93,7 +92,7 @@ export default function GetStartedPage() {
                 transition={{ duration: 0.8, delay: 0.1 }}
                 className="max-w-4xl mx-auto mb-8 text-center"
               >
-                <h1 className="text-4xl md:text-5xl lg:text-5xl font-black text-slate-50 leading-tight tracking-tight drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">
+                <h1 className="text-4xl md:text-5xl lg:text-5xl font-black text-white leading-tight tracking-tight drop-shadow-[0_0_15px_rgba(255,255,255,0.05)]">
                   Empower Your Learning with Academic AI.
                 </h1>
               </motion.div>
@@ -109,12 +108,12 @@ export default function GetStartedPage() {
                   <motion.div 
                     key={index}
                     variants={itemVariants}
-                    className="bg-white/5 backdrop-blur-2xl border border-white/10 rounded-[32px] p-6 text-left hover:bg-white/10 transition-colors duration-300 shadow-[0_0_20px_rgba(0,0,0,0.3)]"
+                    className="bg-slate-900/60 backdrop-blur-xl border border-slate-800/80 rounded-[32px] p-6 text-left hover:bg-slate-900/80 hover:border-slate-700/80 transition-all duration-300 shadow-2xl"
                   >
-                    <div className="w-14 h-14 rounded-2xl bg-slate-900/50 border border-white/10 flex items-center justify-center mb-3 shadow-inner">
+                    <div className="w-14 h-14 rounded-2xl bg-slate-950/60 border border-slate-800/60 flex items-center justify-center mb-3 shadow-inner">
                       {card.icon}
                     </div>
-                    <h3 className="text-xl font-black text-slate-50 mb-2">{card.title}</h3>
+                    <h3 className="text-xl font-black text-white mb-2">{card.title}</h3>
                     <p className="text-slate-400 font-medium text-sm leading-relaxed">
                       {card.description}
                     </p>
@@ -132,9 +131,9 @@ export default function GetStartedPage() {
             >
               <motion.button
                 onClick={handleStart}
-                whileHover={{ scale: 1.05, boxShadow: "0px 0px 30px rgba(99,102,241,0.8)" }}
+                whileHover={{ scale: 1.05, boxShadow: "0px 0px 30px rgba(99,102,241,0.5)" }}
                 whileTap={{ scale: 0.95 }}
-                className="group flex items-center justify-center gap-2 px-10 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold text-lg rounded-full border border-white/20 shadow-lg shadow-indigo-500/50 transition-all"
+                className="group flex items-center justify-center gap-2 px-10 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-lg rounded-full border border-white/10 shadow-lg shadow-indigo-500/30 transition-all"
               >
                 <span>Get Started Now</span>
                 <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />

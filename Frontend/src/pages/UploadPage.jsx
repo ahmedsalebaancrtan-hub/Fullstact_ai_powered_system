@@ -174,62 +174,64 @@ export default function UploadPage() {
       className="max-w-4xl mx-auto w-full flex flex-col h-[calc(100vh-160px)]"
     >
       <div className="text-center mb-8 shrink-0">
-        <h1 className="text-4xl font-black text-gray-900 tracking-tight">Create AI Assessment</h1>
-        <p className="text-gray-500 mt-3 text-lg font-medium">Input your lecture notes or study material to generate pedagogical questions.</p>
+        <h1 className="text-4xl font-black text-white tracking-tight">Create AI Assessment</h1>
+        <p className="text-slate-400 mt-3 text-lg font-medium">Input your lecture notes or study material to generate pedagogical questions.</p>
       </div>
 
-      <div className="bg-[#0a0f1e] rounded-[40px] shadow-2xl border border-gray-800 overflow-hidden flex-1 flex flex-col relative">
+      <div className="bg-slate-900/60 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-800/80 overflow-hidden flex-1 flex flex-col relative">
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <div className="absolute top-0 right-0 w-[60%] h-[60%] bg-indigo-900/10 rounded-full blur-[120px]"></div>
-          <div className="absolute bottom-0 left-[-10%] w-[50%] h-[50%] bg-blue-900/10 rounded-full blur-[100px]"></div>
+          <div className="absolute bottom-0 left-[-10%] w-[50%] h-[50%] bg-violet-900/10 rounded-full blur-[100px]"></div>
         </div>
 
         <div className="flex-1 overflow-y-auto p-6 md:p-12 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] relative z-10">
           <div className="space-y-10">
             
             {/* Target Class Dropdown */}
-            <div className="space-y-4 w-full">
-              <label className="block text-sm font-black text-white uppercase tracking-widest px-1">Target Class</label>
-              <select 
-                value={selectedClassId}
-                onChange={(e) => setSelectedClassId(e.target.value)}
-                disabled={isClassLoading}
-                className="w-full px-8 py-6 bg-slate-900/50 border border-white/5 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500/50 transition-all text-xl text-white font-medium appearance-none"
-              >
-                <option value="" disabled>{isClassLoading ? 'Loading classes...' : 'Select a Class'}</option>
-                {classes.map(cls => (
-                  <option key={getId(cls)} value={getId(cls)}>{cls.name ?? cls.Name}</option>
-                ))}
-              </select>
+            <div className="space-y-3 w-full">
+              <label className="block text-xs font-black text-slate-400 uppercase tracking-widest px-1">Target Class</label>
+              <div className="relative">
+                <select 
+                  value={selectedClassId}
+                  onChange={(e) => setSelectedClassId(e.target.value)}
+                  disabled={isClassLoading}
+                  className="w-full px-6 py-4 bg-slate-950/40 border border-slate-800/80 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500/50 transition-all text-lg text-white font-medium appearance-none"
+                >
+                  <option value="" disabled className="bg-slate-950 text-white">{isClassLoading ? 'Loading classes...' : 'Select a Class'}</option>
+                  {classes.map(cls => (
+                    <option key={getId(cls)} value={getId(cls)} className="bg-slate-950 text-white">{cls.name ?? cls.Name}</option>
+                  ))}
+                </select>
+              </div>
             </div>
 
             {/* Topic / Title */}
-            <div className="space-y-4 w-full">
-              <label className="block text-sm font-black text-white uppercase tracking-widest px-1">Assessment Topic</label>
+            <div className="space-y-3 w-full">
+              <label className="block text-xs font-black text-slate-400 uppercase tracking-widest px-1">Assessment Topic</label>
               <input 
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="e.g. Introduction to Quantum Physics"
-                className="w-full px-8 py-6 bg-slate-900/50 border border-white/5 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500/50 transition-all text-xl text-white placeholder:text-gray-600 font-medium"
+                className="w-full px-6 py-4 bg-slate-950/40 border border-slate-800/80 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500/50 transition-all text-lg text-white placeholder:text-slate-600 font-medium"
               />
             </div>
             
             {/* Course Content / PDF Upload Dropzone */}
-            <div className="space-y-4 w-full">
-              <label className="block text-sm font-black text-white uppercase tracking-widest px-1">Study Material (PDF)</label>
+            <div className="space-y-3 w-full">
+              <label className="block text-xs font-black text-slate-400 uppercase tracking-widest px-1">Study Material (PDF)</label>
               
               <div 
                 onDragEnter={handleDrag}
                 onDragOver={handleDrag}
                 onDragLeave={handleDrag}
                 onDrop={handleDrop}
-                className={`w-full relative border-2 border-dashed rounded-2xl p-12 transition-all flex flex-col items-center justify-center min-h-[300px] overflow-hidden ${
+                className={`w-full relative border-2 border-dashed rounded-xl p-12 transition-all flex flex-col items-center justify-center min-h-[280px] overflow-hidden ${
                   dragActive 
-                    ? 'border-indigo-400 bg-indigo-500/10 shadow-[0_0_30px_rgba(99,102,241,0.25)] scale-[1.01]' 
+                    ? 'border-indigo-500/60 bg-indigo-500/10 shadow-[0_0_30px_rgba(99,102,241,0.2)] scale-[1.01]' 
                     : file
                       ? 'border-emerald-500/40 bg-emerald-500/5'
-                      : 'border-white/10 bg-slate-900/50 hover:border-white/20'
+                      : 'border-slate-700/80 bg-slate-950/30 hover:border-slate-600/80'
                 }`}
               >
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-indigo-500/5 rounded-full blur-[80px] pointer-events-none"></div>
@@ -290,36 +292,36 @@ export default function UploadPage() {
             </div>
 
             {/* Difficulty Level Row */}
-            <div className="space-y-4 w-full">
-              <label className="block text-sm font-black text-white uppercase tracking-widest px-1">Difficulty Level</label>
+            <div className="space-y-3 w-full">
+              <label className="block text-xs font-black text-slate-400 uppercase tracking-widest px-1">Difficulty Level</label>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {['Easy', 'Medium', 'Hard'].map((level) => (
                   <button
                     key={level}
                     type="button"
                     onClick={() => setDifficulty(level)}
-                    className={`py-6 px-6 text-lg font-bold rounded-2xl transition-all border flex items-center justify-between ${
+                    className={`py-5 px-6 text-base font-bold rounded-xl transition-all border flex items-center justify-between ${
                       difficulty === level 
-                        ? 'bg-indigo-600/20 border-indigo-500/50 text-white shadow-lg shadow-indigo-900/20' 
-                        : 'bg-slate-900/50 border-white/5 text-gray-500 hover:text-white hover:bg-slate-800/50'
+                        ? 'bg-indigo-500/10 border-indigo-500/40 text-indigo-300 shadow-[0_0_15px_rgba(99,102,241,0.15)]' 
+                        : 'bg-slate-950/40 border-slate-800/80 text-slate-500 hover:text-white hover:border-slate-700'
                     }`}
                   >
                     {level}
-                    {difficulty === level && <CheckCircle2 size={24} className="text-indigo-400" />}
+                    {difficulty === level && <CheckCircle2 size={20} className="text-indigo-400" />}
                   </button>
                 ))}
               </div>
             </div>
 
             {/* Assessment Style Row */}
-            <div className="space-y-4 w-full">
-              <label className="block text-sm font-black text-white uppercase tracking-widest px-1">Assessment Style</label>
+            <div className="space-y-3 w-full">
+              <label className="block text-xs font-black text-slate-400 uppercase tracking-widest px-1">Assessment Style</label>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {['Multiple Choice', 'True/False', 'Short Answer'].map((type) => (
-                  <label key={type} className={`py-6 px-6 text-lg font-bold rounded-2xl transition-all border flex items-center justify-between cursor-pointer ${
+                  <label key={type} className={`py-5 px-6 text-base font-bold rounded-xl transition-all border flex items-center justify-between cursor-pointer ${
                     questionTypes.includes(type)
-                      ? 'bg-indigo-600/20 border-indigo-500/50 text-white shadow-lg shadow-indigo-900/20'
-                      : 'bg-slate-900/50 border-white/5 text-gray-500 hover:text-white hover:bg-slate-800/50'
+                      ? 'bg-indigo-500/10 border-indigo-500/40 text-indigo-300 shadow-[0_0_15px_rgba(99,102,241,0.15)]'
+                      : 'bg-slate-950/40 border-slate-800/80 text-slate-500 hover:text-white hover:border-slate-700'
                   }`}>
                     <div className="flex items-center gap-4">
                       <input 
@@ -330,10 +332,10 @@ export default function UploadPage() {
                       />
                       <span>{type}</span>
                     </div>
-                    <div className={`h-6 w-6 rounded-lg border-2 flex items-center justify-center transition-all ${
-                      questionTypes.includes(type) ? 'bg-indigo-500 border-indigo-500' : 'border-gray-600 bg-transparent'
+                    <div className={`h-5 w-5 rounded-lg border-2 flex items-center justify-center transition-all ${
+                      questionTypes.includes(type) ? 'bg-indigo-500 border-indigo-500' : 'border-slate-600 bg-transparent'
                     }`}>
-                      {questionTypes.includes(type) && <CheckCircle2 size={16} className="text-white" />}
+                      {questionTypes.includes(type) && <CheckCircle2 size={14} className="text-white" />}
                     </div>
                   </label>
                 ))}
@@ -341,21 +343,21 @@ export default function UploadPage() {
             </div>
 
             {/* Number of Questions */}
-            <div className="space-y-4 w-full">
+            <div className="space-y-3 w-full">
               <div className="flex items-center justify-between px-1">
-                <label className="text-sm font-black text-white uppercase tracking-widest">Number of Questions</label>
-                <span className="text-xl font-black text-[#F8C2A0] bg-orange-900/30 px-6 py-2 rounded-xl">{numQuestions}</span>
+                <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Number of Questions</label>
+                <span className="text-xl font-black text-indigo-300 bg-indigo-500/10 border border-indigo-500/20 px-5 py-1.5 rounded-lg">{numQuestions}</span>
               </div>
-              <div className="py-8 bg-slate-900/50 border border-white/5 rounded-2xl px-8">
+              <div className="py-6 bg-slate-950/40 border border-slate-800/80 rounded-xl px-8">
                 <input 
                   type="range"
                   min="1"
                   max="20"
                   value={numQuestions}
                   onChange={(e) => setNumQuestions(parseInt(e.target.value))}
-                  className="w-full h-3 bg-slate-800 rounded-full appearance-none cursor-pointer accent-[#F8C2A0]"
+                  className="w-full h-2 bg-slate-800 rounded-full appearance-none cursor-pointer accent-indigo-500"
                 />
-                <div className="flex justify-between mt-6 text-[13px] font-black text-gray-500 uppercase tracking-widest">
+                <div className="flex justify-between mt-5 text-[11px] font-black text-slate-500 uppercase tracking-widest">
                   <span>1 Question</span>
                   <span>20 Questions</span>
                 </div>
@@ -363,7 +365,7 @@ export default function UploadPage() {
             </div>
 
             {/* Submit Button */}
-            <div className="pt-8 w-full">
+            <div className="pt-6 w-full">
               <button 
                 type="button"
                 onClick={() => {
@@ -378,14 +380,14 @@ export default function UploadPage() {
                   setShowConfigModal(true);
                 }}
                 disabled={isLoading}
-                className={`relative z-50 w-full py-6 font-black text-xl rounded-2xl flex items-center justify-center gap-4 transition-all shadow-2xl transform active:scale-95 group cursor-pointer ${
+                className={`relative z-50 w-full py-4 font-black text-lg rounded-xl flex items-center justify-center gap-4 transition-all shadow-xl transform active:scale-95 group cursor-pointer border ${
                   isLoading 
-                    ? "bg-slate-800 text-gray-500 cursor-not-allowed opacity-80 shadow-none" 
-                    : "bg-[#F8C2A0] text-[#1e3a8a] hover:bg-[#f7b58c] hover:scale-[1.02] shadow-[#F8C2A0]/20"
+                    ? "bg-slate-800 text-slate-600 cursor-not-allowed opacity-80 shadow-none border-transparent" 
+                    : "bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white hover:scale-[1.02] shadow-indigo-600/20 border-white/5"
                 }`}
               >
-                <Zap size={32} className="group-hover:fill-current" />
-                <span>Configure & Generate</span>
+                <Zap size={24} className="group-hover:fill-current" />
+                <span>Configure &amp; Generate</span>
               </button>
             </div>
 
@@ -400,43 +402,43 @@ export default function UploadPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] bg-[#020617]/80 backdrop-blur-xl flex items-center justify-center p-4"
+            className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-xl flex items-center justify-center p-4"
           >
             <motion.div 
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
-              className="bg-slate-900 border border-white/10 p-8 rounded-3xl w-full max-w-md shadow-2xl relative overflow-hidden"
+              className="bg-slate-950/90 backdrop-blur-2xl border border-slate-800/80 p-8 rounded-2xl w-full max-w-md shadow-2xl relative overflow-hidden"
             >
               <div className="absolute top-0 right-0 w-40 h-40 bg-indigo-500/10 rounded-full blur-[60px] pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
               
               <div className="flex items-center gap-3 mb-8">
-                <Settings className="text-indigo-400" size={28} />
-                <h3 className="text-2xl font-black text-white">Quiz Configuration</h3>
+                <Settings className="text-indigo-400" size={24} />
+                <h3 className="text-xl font-black text-white">Quiz Configuration</h3>
               </div>
 
               <div className="space-y-6">
                 <div>
-                  <label className="block text-sm font-black text-gray-400 uppercase tracking-widest mb-2">Time Limit (Minutes)</label>
+                  <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Time Limit (Minutes)</label>
                   <input 
                     type="number"
                     min="1"
                     value={timeLimit}
                     onChange={(e) => setTimeLimit(parseInt(e.target.value))}
-                    className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-white font-bold text-lg"
+                    className="w-full px-5 py-3.5 bg-slate-900/40 border border-slate-800/80 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all text-white font-bold"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-black text-gray-400 uppercase tracking-widest mb-2">Visibility</label>
+                  <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Visibility</label>
                   <div className="grid grid-cols-2 gap-3">
                     <button 
                       type="button"
                       onClick={() => setStatus('PUBLISHED')}
                       className={`py-3 px-4 rounded-xl font-bold transition-all border ${
                         status === 'PUBLISHED' 
-                          ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400' 
-                          : 'bg-white/5 border-white/5 text-gray-400 hover:bg-white/10'
+                          ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-400' 
+                          : 'bg-slate-950/40 border-slate-800/80 text-slate-500 hover:border-slate-700'
                       }`}
                     >
                       Publish Now
@@ -446,8 +448,8 @@ export default function UploadPage() {
                       onClick={() => setStatus('DRAFT')}
                       className={`py-3 px-4 rounded-xl font-bold transition-all border ${
                         status === 'DRAFT' 
-                          ? 'bg-amber-500/20 border-amber-500/50 text-amber-400' 
-                          : 'bg-white/5 border-white/5 text-gray-400 hover:bg-white/10'
+                          ? 'bg-amber-500/10 border-amber-500/40 text-amber-400' 
+                          : 'bg-slate-950/40 border-slate-800/80 text-slate-500 hover:border-slate-700'
                       }`}
                     >
                       Save as Draft
@@ -459,14 +461,14 @@ export default function UploadPage() {
                   <button 
                     type="button"
                     onClick={() => setShowConfigModal(false)}
-                    className="flex-1 py-4 bg-white/5 text-gray-300 rounded-xl font-bold hover:bg-white/10 transition-colors"
+                    className="flex-1 py-3.5 bg-slate-900/60 text-slate-400 rounded-xl font-bold hover:bg-slate-800/60 transition-colors border border-slate-800/80"
                   >
                     Cancel
                   </button>
                   <button 
                     type="button"
                     onClick={handleGenerate}
-                    className="flex-1 py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-black flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(99,102,241,0.4)] transition-all"
+                    className="flex-1 py-3.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white rounded-xl font-black flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/20 transition-all border border-white/5"
                   >
                     <span>Generate</span>
                     <Zap size={18} className="fill-current" />
@@ -485,42 +487,42 @@ export default function UploadPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] bg-white/95 backdrop-blur-xl flex flex-col items-center justify-center p-6"
+            className="fixed inset-0 z-[100] bg-[#060608]/95 backdrop-blur-xl flex flex-col items-center justify-center p-6"
           >
             <div className="relative mb-12">
               <motion.div 
-                animate={{ scale: [1, 1.4, 1], opacity: [0.4, 0.2, 0.4] }}
+                animate={{ scale: [1, 1.4, 1], opacity: [0.3, 0.15, 0.3] }}
                 transition={{ duration: 3, repeat: Infinity }}
-                className="absolute inset-0 bg-[#F8C2A0] rounded-full blur-3xl"
+                className="absolute inset-0 bg-indigo-500 rounded-full blur-3xl"
               ></motion.div>
               
-              <div className="bg-white p-12 rounded-[40px] shadow-2xl relative z-10 border border-gray-100">
-                <Loader2 size={64} className="text-[#1e3a8a] animate-spin" />
+              <div className="bg-slate-900/90 backdrop-blur-xl border border-slate-800/80 p-12 rounded-2xl shadow-2xl relative z-10">
+                <Loader2 size={64} className="text-indigo-400 animate-spin" />
               </div>
             </div>
             
             <div className="max-w-md w-full text-center space-y-6">
               <div className="space-y-2">
-                <div className="flex items-center justify-center gap-2 text-[#1e3a8a]">
+                <div className="flex items-center justify-center gap-2 text-indigo-400">
                   <Sparkles size={20} className="animate-pulse" />
                   <span className="text-sm font-bold uppercase tracking-[0.2em]">Artificial Intelligence</span>
                 </div>
-                <h3 className="text-3xl font-black text-gray-900">Designing Assessment</h3>
-                <p className="text-gray-500 font-medium leading-relaxed">
-                  designing pedagogical questions based on your provided material. This usually takes 10-15 seconds.
+                <h3 className="text-3xl font-black text-white">Designing Assessment</h3>
+                <p className="text-slate-400 font-medium leading-relaxed">
+                  Designing pedagogical questions based on your provided material. This usually takes 10-15 seconds.
                 </p>
               </div>
 
               {/* Progress Bar Emulation */}
-              <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden border border-gray-200 p-0.5">
+              <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden border border-slate-700/50">
                 <motion.div 
                   initial={{ width: "5%" }}
                   animate={{ width: "95%" }}
                   transition={{ duration: 15, ease: "linear" }}
-                  className="h-full bg-gradient-to-r from-[#1e3a8a] to-[#2563eb] rounded-full shadow-sm"
+                  className="h-full bg-gradient-to-r from-indigo-600 to-violet-600 rounded-full"
                 />
               </div>
-              <div className="flex justify-between text-[11px] font-black text-gray-400 uppercase tracking-widest px-1">
+              <div className="flex justify-between text-[11px] font-black text-slate-500 uppercase tracking-widest px-1">
                 <span>Analyzing</span>
                 <span>Generating</span>
                 <span>Finalizing</span>

@@ -51,7 +51,7 @@ export default function DashboardLayout() {
   }
 
   return (
-    <div className="flex h-screen w-screen bg-gradient-to-br from-[#020617] via-[#0f172a] to-[#1e1b4b] font-sans overflow-hidden relative">
+    <div className="flex h-screen w-screen bg-[#060608] font-sans overflow-hidden relative">
       {/* Background Ambience */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-[10%] left-[20%] w-[30%] h-[30%] bg-indigo-500/5 rounded-full blur-[140px]"></div>
@@ -72,11 +72,11 @@ export default function DashboardLayout() {
           ${isSidebarOpen ? 'md:ml-[290px]' : 'md:ml-28'}`}
       >
         {/* Header */}
-        <header className="h-20 bg-transparent border-b border-white/5 flex items-center justify-between px-6 md:px-10 shrink-0 z-[50] relative">
+        <header className="h-20 bg-transparent border-b border-slate-900/60 flex items-center justify-between px-6 md:px-10 shrink-0 z-[50] relative">
           <div className="flex items-center gap-5">
             <button 
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className="p-2.5 text-slate-400 hover:text-slate-50 hover:bg-white/10 rounded-xl transition-all"
+              className="p-2.5 text-slate-400 hover:text-slate-50 hover:bg-slate-900/50 rounded-xl transition-all border border-transparent hover:border-slate-800/80"
             >
               <Menu size={24} />
             </button>
@@ -84,24 +84,24 @@ export default function DashboardLayout() {
               <h1 className="text-xl font-bold text-white">
                 Dashboard
               </h1>
-              <p className="text-[10px] text-gray-400 font-black uppercase tracking-[0.2em]">
+              <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em]">
                 QUIZ AI Interface
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-3 pl-6 border-l border-white/10">
+            <div className="flex items-center gap-3 pl-6 border-l border-slate-800/80">
               <div className="text-right hidden sm:block">
                 <p className="text-sm font-black text-slate-50">{displayName}</p>
-                <p className="text-[10px] text-indigo-300 font-bold uppercase tracking-widest bg-indigo-500/20 border border-indigo-500/30 px-2 py-0.5 rounded-md inline-block mt-0.5">
+                <p className="text-[10px] text-indigo-300 font-bold uppercase tracking-widest bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 rounded-md inline-block mt-0.5">
                   {displayRole}
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setIsProfileOpen((v) => !v)}
-                className="h-11 w-11 rounded-2xl bg-slate-900/40 backdrop-blur-xl border border-white/10 flex items-center justify-center text-slate-50 shadow-[0_0_15px_rgba(255,255,255,0.1)] group hover:bg-white/5 transition-colors"
+                className="h-11 w-11 rounded-2xl bg-slate-900/60 backdrop-blur-xl border border-slate-800/80 flex items-center justify-center text-slate-50 shadow-2xl group hover:bg-slate-800/60 transition-colors"
                 aria-label="Open profile menu"
               >
                 <User size={22} className="text-indigo-400 group-hover:scale-110 transition-transform" />
@@ -112,7 +112,7 @@ export default function DashboardLayout() {
           {/* Profile dropdown */}
           {isProfileOpen && (
             <div
-              className="absolute right-6 md:right-10 top-[72px] w-[320px] rounded-3xl border border-white/10 bg-slate-950/80 backdrop-blur-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden"
+              className="absolute right-6 md:right-10 top-[72px] w-[320px] rounded-3xl border border-slate-800/80 bg-slate-900/90 backdrop-blur-2xl shadow-2xl overflow-hidden"
               onMouseLeave={() => setIsProfileOpen(false)}
             >
               <div className="p-5 border-b border-white/10">

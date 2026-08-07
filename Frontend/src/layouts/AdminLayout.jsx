@@ -42,10 +42,10 @@ export default function AdminLayout() {
   );
 
   return (
-    <div className="h-screen bg-slate-950 text-slate-50 flex flex-col overflow-hidden">
-      <header className="px-6 md:px-10 py-5 flex items-center justify-between border-b border-white/10 bg-slate-900/50 backdrop-blur-md sticky top-0 z-50 relative">
+    <div className="h-screen bg-[#060608] text-slate-50 flex flex-col overflow-hidden">
+      <header className="px-6 md:px-10 py-5 flex items-center justify-between border-b border-slate-800/80 bg-slate-900/60 backdrop-blur-xl sticky top-0 z-50 relative">
         <div className="flex items-center gap-3">
-          <div className="bg-indigo-500/20 p-2 rounded-xl border border-indigo-500/30">
+          <div className="bg-indigo-500/10 p-2 rounded-xl border border-indigo-500/20">
             <ShieldCheck className="text-indigo-400" />
           </div>
           <h1 className="text-xl font-black tracking-tight">Admin Portal</h1>
@@ -55,10 +55,10 @@ export default function AdminLayout() {
           <button
             type="button"
             onClick={() => setIsProfileOpen((v) => !v)}
-            className="flex items-center gap-3 bg-white/5 px-4 py-2 rounded-2xl border border-white/10 hover:bg-white/10 transition-colors"
+            className="flex items-center gap-3 bg-slate-900/60 px-4 py-2 rounded-2xl border border-slate-800/80 hover:bg-slate-800/60 transition-colors"
             aria-label="Open profile menu"
           >
-            <div className="w-9 h-9 rounded-2xl bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center font-black text-sm">
+            <div className="w-9 h-9 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-600 flex items-center justify-center font-black text-sm">
               {initial}
             </div>
             <div className="hidden md:block text-left">
@@ -79,7 +79,7 @@ export default function AdminLayout() {
 
         {isProfileOpen && (
           <div
-            className="absolute right-6 md:right-10 top-[76px] w-[340px] rounded-3xl border border-white/10 bg-slate-950/85 backdrop-blur-2xl shadow-[0_0_50px_rgba(0,0,0,0.55)] overflow-hidden"
+            className="absolute right-6 md:right-10 top-[76px] w-[340px] rounded-3xl border border-slate-800/80 bg-slate-900/90 backdrop-blur-2xl shadow-2xl overflow-hidden"
             onMouseLeave={() => setIsProfileOpen(false)}
           >
             <div className="p-5 border-b border-white/10">
@@ -109,7 +109,7 @@ export default function AdminLayout() {
       </header>
       
       <div className="flex-1 min-h-0 w-full max-w-[1600px] mx-auto px-4 md:px-8 py-6 flex flex-col lg:flex-row gap-6">
-        <aside className="lg:w-[280px] shrink-0 h-fit bg-slate-900/45 backdrop-blur-3xl border border-white/10 rounded-3xl p-4">
+        <aside className="lg:w-[280px] shrink-0 h-fit bg-slate-900/60 backdrop-blur-xl border border-slate-800/80 rounded-3xl p-4 shadow-2xl">
           <p className="px-2 pt-2 pb-4 text-[10px] font-black uppercase tracking-[0.28em] text-slate-500">Admin Navigation</p>
           <div className="space-y-2">
             <button

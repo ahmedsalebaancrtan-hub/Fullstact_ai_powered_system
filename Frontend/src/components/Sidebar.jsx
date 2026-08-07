@@ -67,7 +67,7 @@ const Sidebar = ({ isOpen, toggleSidebar, logout, user }) => {
 
       {/* Sidebar Container */}
       <aside 
-        className={`fixed left-4 top-4 bottom-4 bg-slate-900/40 backdrop-blur-3xl text-slate-50 transition-all duration-300 z-[70] rounded-3xl border border-white/10 shadow-[0_0_40px_rgba(0,0,0,0.5)]
+        className={`fixed left-4 top-4 bottom-4 bg-slate-900/60 backdrop-blur-xl text-slate-50 transition-all duration-300 z-[70] rounded-3xl border border-slate-800/80 shadow-2xl
         ${isOpen ? 'w-[260px] translate-x-0' : 'w-0 -translate-x-full md:w-20 md:translate-x-0'}
         overflow-hidden`}
       >
@@ -75,7 +75,7 @@ const Sidebar = ({ isOpen, toggleSidebar, logout, user }) => {
           {/* Logo Section */}
           <div className="p-8 flex items-center justify-between shrink-0">
             <h2 className={`font-black text-xl tracking-tighter transition-all duration-300 flex items-center gap-2 ${!isOpen && 'md:opacity-0 md:scale-0'}`}>
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-sm">AI</div>
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center text-white text-sm">AI</div>
               <span>QUIZ<span className="text-indigo-400">GEN</span></span>
             </h2>
             <button 
@@ -89,9 +89,9 @@ const Sidebar = ({ isOpen, toggleSidebar, logout, user }) => {
           {/* Role Badge */}
           <div className={`px-6 mb-4 transition-all duration-300 ${!isOpen && 'md:opacity-0'}`}>
             <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border
-              ${isAdmin   ? 'bg-purple-500/20 text-purple-300 border-purple-500/30' :
-                isTeacher ? 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30' :
-                            'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'}`}>
+              ${isAdmin   ? 'bg-purple-500/10 text-purple-300 border-purple-500/20' :
+                isTeacher ? 'bg-indigo-500/10 text-indigo-300 border-indigo-500/20' :
+                            'bg-emerald-500/10 text-emerald-300 border-emerald-500/20'}`}>
               {isAdmin ? <ShieldCheck size={10} /> : null}
               {role || 'user'}
             </span>
@@ -103,15 +103,15 @@ const Sidebar = ({ isOpen, toggleSidebar, logout, user }) => {
               const isActive = location.pathname === item.path;
               return (
                 <button
-                  key={item.name}
+                   key={item.name}
                   onClick={() => {
                     navigate(item.path);
                     if (window.innerWidth < 768) toggleSidebar();
                   }}
-                  className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl transition-all relative group
+                  className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl transition-all relative group border
                     ${isActive 
-                      ? 'bg-indigo-500/20 text-indigo-400 shadow-[0_0_15px_rgba(99,102,241,0.2)] border border-indigo-500/30' 
-                      : 'text-slate-400 hover:bg-white/5 hover:text-slate-50 border border-transparent'
+                      ? 'bg-indigo-500/10 text-indigo-400 shadow-[0_0_15px_rgba(99,102,241,0.15)] border-indigo-500/20' 
+                      : 'text-slate-400 hover:bg-slate-900/50 hover:text-slate-50 border-transparent hover:border-slate-800/60'
                     }`}
                 >
                   <item.icon size={22} className={`shrink-0 transition-all duration-300 ${isActive ? 'scale-110 drop-shadow-[0_0_8px_rgba(99,102,241,0.8)]' : 'group-hover:scale-110 group-hover:text-indigo-400'}`} />
@@ -124,7 +124,7 @@ const Sidebar = ({ isOpen, toggleSidebar, logout, user }) => {
           </nav>
 
           {/* User Section (Bottom) */}
-          <div className="p-6 border-t border-white/10 shrink-0 bg-white/5 rounded-b-3xl">
+          <div className="p-6 border-t border-slate-800/60 shrink-0 bg-slate-950/40 rounded-b-3xl">
             {/* User info */}
             <div className={`mb-3 px-1 transition-all duration-300 ${!isOpen && 'md:opacity-0'}`}>
               <p className="text-xs font-black text-slate-500 uppercase tracking-widest truncate">
